@@ -1,0 +1,13 @@
+:host ::ng-deep {
+  .grid-nogutter {
+    width: 100%;
+
+    .col-span-12 {
+      width: 100%;
+      .p-6{
+
+        justify-content: space-between !important;
+      }
+    }
+  }
+}

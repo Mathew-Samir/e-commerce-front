@@ -1,0 +1,47 @@
+<p-menubar [model]="items()">
+
+  <ng-template pTemplate="start">
+    <h3 class="logo">MyApp</h3>
+  </ng-template>
+
+  <ng-template pTemplate="end">
+    <div class="nav-actions">
+      <p-button
+        icon="pi pi-shopping-cart"
+        [badge]="cartCount() > 0 ? cartCount().toString() : undefined"
+        badgeSeverity="danger"
+        [text]="true"
+        severity="secondary"
+        class="cart-btn"
+        routerLink="/cart"
+      />
+
+      @if (isAuthenticated()) {
+        <span class="user-name">Welcome, {{ currentUser()?.['name'] }}</span>
+        <p-button
+          label="Logout"
+          icon="pi pi-sign-out"
+          severity="danger"
+          [outlined]="true"
+          (click)="logout()"
+        />
+      } @else {
+        <p-button
+          label="Login"
+          icon="pi pi-user"
+          severity="secondary"
+          outlined="true"
+          routerLink="/login"
+        />
+
+        <p-button
+          label="Sign Up"
+          icon="pi pi-user-plus"
+          severity="contrast"
+          routerLink="/signup"
+        />
+      }
+    </div>
+  </ng-template>
+
+</p-menubar>

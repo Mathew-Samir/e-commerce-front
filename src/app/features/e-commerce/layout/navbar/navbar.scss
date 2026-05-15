@@ -1,0 +1,58 @@
+::ng-deep .p-menubar {
+  border: none !important;
+  border-bottom: 1px solid #e5e7eb !important;
+  border-radius: 0 !important;
+
+  padding: 0 2rem;
+  height: 72px;
+
+  display: flex;
+  align-items: center;
+
+  .p-menubar-root-list {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+  }
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+
+  .cart-btn {
+    ::ng-deep .p-button {
+      position: relative;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+
+      .p-badge {
+        position: absolute;
+        top: 2px;
+        right: 2px;
+        min-width: 18px;
+        height: 18px;
+        font-size: 0.7rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        justify-content: center;
+        border: 2px solid white;
+      }
+
+      &:hover {
+        background: rgba(0, 0, 0, 0.05);
+      }
+    }
+  }
+}
+
+.logo {
+  font-size: 1.6rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--primary-color);
+  margin: 0;
+}}

@@ -1,0 +1,180 @@
+<div class="container mx-auto px-4 py-8" style="max-width: 1200px">
+  <div class="grid justify-content-between m-0">
+    <!-- Left Side: Cart List -->
+    <div class="col-12 lg:col-7 flex flex-column gap-4 p-0">
+      <!-- Header -->
+      <div class="flex justify-content-between align-items-end">
+        <div class="flex align-items-baseline gap-3">
+          <h1 class="text-4xl font-bold m-0 text-surface-900 dark:text-surface-0">Cart</h1>
+          <span class="text-surface-500 font-medium text-lg">{{ totalItems() }} Products</span>
+        </div>
+        <p-button
+          label="Clear Cart"
+          icon="pi pi-trash"
+          severity="danger"
+          [text]="true"
+          (onClick)="clearCart()"
+          [disabled]="totalItems() === 0"
+        />
+      </div>
+
+      <!-- Items Card -->
+      <div
+        class="card p-0 shadow-none border-1 surface-border"
+        style="border-radius: 12px; overflow: hidden"
+      >
+        <p-dataview
+          #dv
+          [value]="cartItems()"
+          [rows]="5"
+          [paginator]="totalItems() > 5"
+          emptyMessage=" "
+        >
+          <ng-template #list let-items>
+            <div class="flex flex-column">
+              @for (item of items; track item.id; let first = $first; let last = $last) {
+                <div class="p-4" [ngClass]="{ 'border-bottom-1 surface-border': !last }">
+                  <div class="flex align-items-stretch gap-4 w-full">
+                    <!-- Image -->
+                    <div style="width: 120px; flex-shrink: 0">
+                      <img
+                        style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px"
+                        [src]="
+                          item.product.image.startsWith('http')
+                            ? item.product.image
+                            : 'https://primefaces.org/cdn/primeng/images/demo/product/' +
+                              item.product.image
+                        "
+                        [alt]="item.product.name"
+                      />
+                    </div>
+
+                    <div class="flex flex-column flex-1 gap-2">
+                      <div class="flex justify-content-between align-items-start">
+                        <span class="text-xl font-bold text-surface-900 dark:text-surface-0">{{
+                          item.product.name
+                        }}</span>
+                        <p-button
+                          label="Remove"
+                          icon="pi pi-trash"
+                          severity="danger"
+                          size="small"
+                          (onClick)="removeItem(item.id)"
+                        />
+                      </div>
+
+                      <div class="flex align-items-center gap-2 text-surface-500 text-sm">
+                        <i class="pi pi-star-fill text-yellow-500"></i>
+                        <span
+                          >Rating: {{ item.product.rating }}/5
+                          <span class="text-primary">(0 rating)</span></span
+                        >
+                      </div>
+
+                      <div class="flex justify-content-between align-items-center mt-auto">
+                        <div class="text-2xl font-bold text-surface-900 dark:text-surface-0">
+                          <span class="text-sm font-normal text-surface-500 mr-1">(x1)</span>
+                          {{ item.price | currency: 'USD' }}
+                        </div>
+                        <div class="flex align-items-center gap-2">
+                          <p-button
+                            icon="pi pi-minus"
+                            severity="secondary"
+                            [outlined]="true"
+                            (onClick)="updateQuantity(item.id, -1)"
+                          />
+                          <div
+                            class="flex align-items-center justify-content-center border-1 surface-border border-round font-semibold text-lg px-4 py-2 bg-surface-0 dark:bg-surface-900"
+                          >
+                            {{ item.quantity }}
+                          </div>
+                          <p-button
+                            icon="pi pi-plus"
+                            severity="secondary"
+                            [outlined]="true"
+                            (onClick)="updateQuantity(item.id, 1)"
+                            [disabled]="item.product.inventoryStatus === 'OUTOFSTOCK'"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              } @empty {
+                <div class="p-8 text-center flex flex-column align-items-center gap-3">
+                  <i class="pi pi-shopping-cart text-6xl text-surface-300"></i>
+                  <div class="text-2xl font-semibold text-surface-900">Your cart is empty</div>
+                  <p class="text-surface-500 m-0">Looks like you haven't added anything to your cart yet.</p>
+                </div>
+              }
+            </div>
+          </ng-template>
+        </p-dataview>
+      </div>
+
+      <div class="mt-2">
+        <p-button label="Continue Shopping" icon="pi pi-arrow-left" routerLink="/product-list" />
+      </div>
+    </div>
+
+    <!-- Right Side: Summary -->
+    <div class="col-12 lg:col-4 flex flex-column gap-4 p-0 mt-4 lg:mt-0">
+      <h2 class="text-2xl font-bold m-0 text-surface-900 dark:text-surface-0">Summary</h2>
+
+      <div class="card shadow-none border-1 surface-border p-4" style="border-radius: 12px">
+        <div class="flex flex-column gap-3">
+          <input pInputText placeholder="Coupon Code" class="w-full p-3 border-round" />
+          <p-button label="Apply Coupon" icon="pi pi-ticket" class="w-full" styleClass="w-full" />
+
+          <div
+            class="border-1 surface-border border-round p-4 text-center text-surface-500 bg-surface-50 dark:bg-surface-800 flex align-items-center justify-content-center gap-2"
+          >
+            <i class="pi pi-info-circle"></i>
+            <span>No coupon applied</span>
+          </div>
+
+          <div class="flex justify-content-between align-items-center">
+            <span class="text-2xl font-bold text-surface-900 dark:text-surface-0">Total:</span>
+            <span class="text-3xl font-extrabold text-surface-900 dark:text-surface-0">{{
+              totalPrice() | currency: 'USD'
+            }}</span>
+          </div>
+
+          <p-button
+            label="Checkout"
+            icon="pi pi-arrow-right"
+            iconPos="right"
+            class="w-full"
+            styleClass="w-full p-3 text-lg"
+            (onClick)="openCheckout()"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<p-dialog
+  header="Checkout Details"
+  [modal]="true"
+  [(visible)]="isCheckoutDialogVisible"
+  [style]="{ width: '450px' }"
+  [draggable]="false"
+  [resizable]="false"
+>
+  <form [formGroup]="checkoutForm" (ngSubmit)="placeOrder()" class="flex flex-column gap-3 py-3">
+    <div class="flex flex-column gap-2">
+      <label for="address" class="font-semibold">Address</label>
+      <input pInputText id="address" formControlName="address" placeholder="123 Main St" class="w-full" />
+    </div>
+    <div class="flex flex-column gap-2">
+      <label for="phoneNumber" class="font-semibold">Phone Number</label>
+      <input pInputText id="phoneNumber" formControlName="phoneNumber" placeholder="01501265265" class="w-full" />
+    </div>
+
+    <div class="flex justify-content-end gap-2 mt-4">
+      <p-button label="Cancel" severity="secondary" [text]="true" (onClick)="isCheckoutDialogVisible.set(false)" />
+      <p-button label="Place Order" type="submit" [loading]="isPlacingOrder()" />
+    </div>
+  </form>
+</p-dialog>

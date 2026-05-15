@@ -1,0 +1,89 @@
+<section class="hero">
+  <img
+    src="https://images.pexels.com/photos/1884584/pexels-photo-1884584.jpeg?auto=compress&cs=tinysrgb&w=1600"
+    alt="Fashion Hero"
+    class="hero-image"
+  />
+
+  <div class="overlay"></div>
+
+  <div class="hero-content">
+    <span class="subtitle"> NEW COLLECTION 2026 </span>
+
+    <h1>Elevate Your Fashion Style</h1>
+
+    <p>Discover premium fashion pieces designed for confidence, comfort, and modern lifestyle.</p>
+
+    <div class="buttons">
+      <button class="primary-btn">Shop Now</button>
+
+      <button class="secondary-btn">Explore Collection</button>
+    </div>
+  </div>
+</section>
+
+<section class="featured-products">
+  <div class="container">
+    <div class="section-header">
+      <h2>Featured Products</h2>
+      <p>Explore our most popular items</p>
+    </div>
+
+    <div class="card">
+      <p-carousel
+        [value]="products()"
+        [numVisible]="3"
+        [numScroll]="1"
+        [responsiveOptions]="responsiveOptions"
+        [circular]="true"
+        [autoplayInterval]="3000"
+      >
+        <ng-template let-product pTemplate="item">
+          <div class="product-item">
+            <div class="product-card">
+              <div class="product-image-container">
+                <img
+                  [src]="product.image"
+                  [alt]="product.name"
+                  class="product-image"
+                />
+                <p-tag
+                  [value]="product.inventoryStatus"
+                  [severity]="getSeverity(product.inventoryStatus)"
+                  class="status-tag"
+                ></p-tag>
+              </div>
+              <div class="product-info">
+                <h4 class="product-name">{{ product.name }}</h4>
+                <div class="product-footer">
+                  <span class="product-price">{{ '$' + product.price }}</span>
+                  <div class="product-actions">
+                    <p-button icon="pi pi-heart" [outlined]="true" class="wishlist-btn" />
+                    <p-button icon="pi pi-shopping-cart" class="cart-btn" (onClick)="addToCart(product)" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+      </p-carousel>
+    </div>
+  </div>
+</section>
+
+<section class="testimonials">
+  <div class="container">
+    <div class="section-header">
+      <h2>What Our Customers Say</h2>
+      <p>Real reviews from real people</p>
+    </div>
+
+    <div class="grid">
+      @for (testimonial of testimonials(); track testimonial.id) {
+        <div class="col-12 md:col-6 lg:col-4">
+          <app-testimonials-card [testimonial]="testimonial" />
+        </div>
+      }
+    </div>
+  </div>
+</section>

@@ -1,0 +1,92 @@
+<div class="projects-container p-4">
+  <div class="flex justify-content-between align-items-center mb-4">
+    <h2 class="m-0 text-3xl font-bold text-900">Projects Management</h2>
+    <p-button
+      label="New Project"
+      icon="pi pi-plus"
+      severity="primary"
+      rounded="true"
+      (onClick)="showAddDialog()"
+    />
+  </div>
+
+  <div class="card shadow-2 border-round-xl overflow-hidden bg-white">
+    <p-table
+      [value]="projects()"
+      [loading]="loading()"
+      [paginator]="true"
+      [rows]="10"
+      [responsiveLayout]="'scroll'"
+      styleClass="p-datatable-striped"
+      [rowsPerPageOptions]="[10, 25, 50]"
+    >
+      <ng-template pTemplate="header">
+        <tr>
+          <th pSortableColumn="title" class="bg-gray-50">Title <p-sortIcon field="title" /></th>
+          <th class="bg-gray-50">Category</th>
+          <th class="bg-gray-50">Image</th>
+          <th pSortableColumn="createdAt" class="bg-gray-50">
+            Created At <p-sortIcon field="createdAt" />
+          </th>
+          <th class="bg-gray-50 text-center" style="width: 120px">Actions</th>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="body" let-project>
+        <tr>
+          <td class="font-semibold">{{ project.title }}</td>
+          <td>
+            <span
+              class="px-2 py-1 border-round-md bg-primary-50 text-primary-700 text-xs font-bold uppercase"
+            >
+              {{ project.category }}
+            </span>
+          </td>
+          <td>
+            <img
+              [src]="project.image"
+              [alt]="project.title"
+              class="shadow-1 border-round"
+              style="width: 60px; height: 40px; object-fit: cover"
+            />
+          </td>
+          <td class="text-600">{{ project.createdAt | date: 'mediumDate' }}</td>
+          <td>
+            <div class="flex gap-2 justify-content-center">
+              <p-button
+                icon="pi pi-pencil"
+                [rounded]="true"
+                [text]="true"
+                severity="info"
+                pTooltip="Edit Project"
+                (onClick)="showEditDialog(project)"
+              />
+              <p-button
+                icon="pi pi-trash"
+                [rounded]="true"
+                [text]="true"
+                severity="danger"
+                pTooltip="Delete Project"
+                (onClick)="deleteProject(project)"
+              />
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="5" class="text-center p-5">
+            <div class="flex flex-column align-items-center gap-3">
+              <i class="pi pi-folder-open text-4xl text-400"></i>
+              <span class="text-600 font-medium">No projects found.</span>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</div>
+
+<p-confirmDialog />
+<p-toast position="bottom-right" />

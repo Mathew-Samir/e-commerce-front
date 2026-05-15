@@ -1,0 +1,311 @@
+<div class="products-container">
+  <div class="header-section">
+    <div>
+      <h2>Products Management</h2>
+      <p>Organize and control your product inventory</p>
+    </div>
+    <p-button
+      icon="pi pi-plus"
+      label="Add New Product"
+      (onClick)="openNew()"
+      styleClass="p-button-primary p-button-raised border-round-lg shadow-2"
+    ></p-button>
+  </div>
+  
+  <!-- Filters Section -->
+  <div class="filters-section mb-4 p-4 border-round-xl bg-white shadow-1 flex gap-3 align-items-end" [formGroup]="filterForm">
+    <div class="filter-group flex-1">
+      <label class="block text-sm font-semibold text-600 mb-2">Filter by Category</label>
+      <p-select 
+        [options]="categories()" 
+        formControlName="categoryId" 
+        optionLabel="title" 
+        optionValue="_id" 
+        placeholder="All Categories" 
+        styleClass="w-full"
+        (onChange)="onFilterCategoryChange()"
+        [showClear]="true" />
+    </div>
+    <div class="filter-group flex-1">
+      <label class="block text-sm font-semibold text-600 mb-2">Filter by Sub Category</label>
+      <p-select 
+        [options]="filterSubCategories()" 
+        formControlName="subCategoryId" 
+        optionLabel="title" 
+        optionValue="_id" 
+        placeholder="All Sub Categories" 
+        styleClass="w-full"
+        [disabled]="!filterForm.get('categoryId')?.value"
+        (onChange)="onFilterChange()"
+        [showClear]="true" />
+    </div>
+    <p-button 
+      icon="pi pi-filter-slash" 
+      label="Clear" 
+      [text]="true" 
+      severity="secondary" 
+      (onClick)="clearFilters()" 
+      [disabled]="!filterForm.get('categoryId')?.value && !filterForm.get('subCategoryId')?.value" />
+  </div>
+
+  <div class="card shadow-4 border-round-xl overflow-hidden">
+    <p-table
+      [value]="loading() ? skeletonRows : products()"
+      [paginator]="!loading()"
+      [rows]="10"
+      [responsiveLayout]="'scroll'"
+      styleClass="p-datatable-sm"
+      [showCurrentPageReport]="true"
+      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products"
+    >
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Image</th>
+          <th>Name</th>
+          <th>Price</th>
+          <th>Stock</th>
+          <th>Status</th>
+          <th class="text-center" style="width: 120px">Actions</th>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="body" let-product>
+        @if (loading()) {
+          <tr>
+            <td><p-skeleton width="4rem" height="4rem" borderRadius="8px"></p-skeleton></td>
+            <td>
+              <div class="flex flex-column gap-2">
+                <p-skeleton width="8rem" height="1.25rem"></p-skeleton>
+                <p-skeleton width="12rem" height="1rem"></p-skeleton>
+              </div>
+            </td>
+            <td><p-skeleton width="5rem" height="1.5rem"></p-skeleton></td>
+            <td><p-skeleton width="3rem" height="1.25rem"></p-skeleton></td>
+            <td><p-skeleton width="4rem" height="1.5rem" borderRadius="1rem"></p-skeleton></td>
+            <td>
+              <div class="flex justify-content-center gap-2">
+                <p-skeleton shape="circle" size="2rem"></p-skeleton>
+                <p-skeleton shape="circle" size="2rem"></p-skeleton>
+              </div>
+            </td>
+          </tr>
+        } @else {
+          <tr>
+            <td>
+              <div class="relative">
+                <img
+                  [src]="product.image || 'assets/placeholder.png'"
+                  [alt]="product.name"
+                  class="w-4rem h-4rem border-round-lg shadow-1 object-cover"
+                />
+              </div>
+            </td>
+            <td>
+              <div class="flex flex-column gap-1">
+                <span class="font-bold text-900">{{ product.name }}</span>
+                <span
+                  class="text-xs text-500 max-w-15rem overflow-hidden text-overflow-ellipsis white-space-nowrap"
+                  [pTooltip]="product.description"
+                >
+                  {{ product.description }}
+                </span>
+              </div>
+            </td>
+            <td>
+              <span class="font-semibold text-primary text-lg">{{ product.price | currency }}</span>
+            </td>
+            <td>
+              <div class="flex align-items-center gap-2">
+                <i class="pi pi-box text-500"></i>
+                <span [class]="product.stock > 0 ? 'text-900 font-medium' : 'text-red-500 font-bold'">
+                  {{ product.stock }}
+                </span>
+              </div>
+            </td>
+            <td>
+              @if (product.isActive) {
+                <span class="status-badge active" (click)="toggleActive(product)">Active</span>
+              } @else {
+                <span class="status-badge inactive" (click)="toggleActive(product)">Inactive</span>
+              }
+            </td>
+            <td>
+              <div class="flex gap-1 justify-content-center">
+                <p-button
+                  icon="pi pi-pencil"
+                  [rounded]="true"
+                  [text]="true"
+                  severity="secondary"
+                  pTooltip="Edit Product"
+                  (onClick)="editProduct(product)"
+                />
+                <p-button
+                  icon="pi pi-trash"
+                  [rounded]="true"
+                  [text]="true"
+                  severity="danger"
+                  pTooltip="Delete Product"
+                  (onClick)="deleteProduct(product)"
+                />
+              </div>
+            </td>
+          </tr>
+        }
+      </ng-template>
+
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="6" class="text-center p-8">
+            <div class="flex flex-column align-items-center gap-4">
+              <div
+                class="w-8rem h-8rem border-circle bg-gray-50 flex align-items-center justify-content-center shadow-inset"
+              >
+                <i class="pi pi-box text-6xl text-200"></i>
+              </div>
+              <div class="flex flex-column gap-2">
+                <span class="text-xl font-bold text-900">No products yet</span>
+                <span class="text-600"
+                  >Start adding products to your catalog to see them here.</span
+                >
+              </div>
+              <p-button
+                label="Add First Product"
+                icon="pi pi-plus"
+                (onClick)="openNew()"
+                severity="secondary"
+              ></p-button>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</div>
+
+<p-dialog
+  [(visible)]="productDialog"
+  [style]="{ width: '550px' }"
+  [header]="isEdit() ? 'Edit Product' : 'Create New Product'"
+  [modal]="true"
+  styleClass="product-dialog p-fluid"
+  [draggable]="false"
+  [resizable]="false"
+>
+  <ng-template pTemplate="content">
+    <form [formGroup]="productForm" class="flex flex-column gap-4">
+      <div class="premium-input-group">
+        <label for="name">Product Name</label>
+        <input
+          type="text"
+          pInputText
+          id="name"
+          formControlName="name"
+          placeholder="Enter product name"
+        />
+        @if (productForm.get('name')?.invalid && productForm.get('name')?.dirty) {
+          <small class="p-error block">Product name is required.</small>
+        }
+      </div>
+
+      <div class="premium-input-group">
+        <label for="description">Description</label>
+        <textarea
+          pInputTextarea
+          id="description"
+          formControlName="description"
+          rows="4"
+          placeholder="Describe the product details..."
+        ></textarea>
+      </div>
+
+      <div class="flex gap-3">
+        <div class="premium-input-group flex-1">
+          <label for="price">Price</label>
+          <p-inputNumber
+            id="price"
+            formControlName="price"
+            mode="currency"
+            currency="USD"
+            locale="en-US"
+            placeholder="$0.00"
+          ></p-inputNumber>
+        </div>
+        <div class="premium-input-group flex-1">
+          <label for="stock">Stock Level</label>
+          <p-inputNumber id="stock" formControlName="stock" placeholder="0"></p-inputNumber>
+        </div>
+      </div>
+
+      <div class="flex gap-3">
+        <div class="premium-input-group flex-1">
+          <label for="categoryId">Category</label>
+          <p-select
+            id="categoryId"
+            formControlName="categoryId"
+            [options]="categories()"
+            optionLabel="title"
+            optionValue="_id"
+            placeholder="Select Category"
+            (onChange)="onCategoryChange($event.value)"
+            appendTo="body"
+          ></p-select>
+        </div>
+        <div class="premium-input-group flex-1">
+          <label for="subCategoryId">Sub Category</label>
+          <p-select
+            id="subCategoryId"
+            formControlName="subCategoryId"
+            [options]="filteredSubCategories()"
+            optionLabel="title"
+            optionValue="_id"
+            placeholder="Select Sub Category"
+            [disabled]="!productForm.get('categoryId')?.value"
+            appendTo="body"
+          ></p-select>
+        </div>
+      </div>
+
+      <div class="premium-input-group">
+        <label>Product Image</label>
+        <div class="file-upload-container">
+          <label for="image" class="upload-area">
+            <i class="pi pi-cloud-upload"></i>
+            <div class="upload-text">
+              @if (selectedFile()) {
+                <span>{{ selectedFile()?.name }}</span>
+              } @else {
+                Click to <span>upload image</span> or drag and drop
+              }
+            </div>
+            <span class="upload-hint">PNG, JPG, WebP up to 5MB</span>
+            <input type="file" id="image" (change)="onFileSelect($event)" accept="image/*" />
+          </label>
+          @if (!isEdit() && !selectedFile()) {
+            <small class="p-error block mt-1">An image is required for new products.</small>
+          }
+        </div>
+      </div>
+    </form>
+  </ng-template>
+
+  <ng-template pTemplate="footer">
+    <p-button
+      label="Cancel"
+      icon="pi pi-times"
+      [text]="true"
+      severity="secondary"
+      (onClick)="hideDialog()"
+    ></p-button>
+    <p-button
+      [label]="isEdit() ? 'Save Changes' : 'Create Product'"
+      icon="pi pi-check"
+      [loading]="loading()"
+      (onClick)="saveProduct()"
+      [disabled]="productForm.invalid || (!isEdit() && !selectedFile())"
+      styleClass="p-button-raised"
+    ></p-button>
+  </ng-template>
+</p-dialog>
+
+<p-confirmDialog styleClass="premium-confirm" />
+<p-toast />

@@ -1,0 +1,103 @@
+<div class="refunds-container p-4">
+  <div class="mb-4">
+    <h2 class="m-0 text-3xl font-bold text-900">Refunds Management</h2>
+    <p class="text-600">Handle customer refund requests and disputes</p>
+  </div>
+
+  <div class="card shadow-2 border-round-xl overflow-hidden bg-white">
+    <p-table
+      [value]="loading() ? skeletonRows : refunds()"
+      [paginator]="!loading()"
+      [rows]="10"
+      [responsiveLayout]="'scroll'"
+      styleClass="p-datatable-striped"
+    >
+      <ng-template pTemplate="header">
+        <tr>
+          <th class="bg-gray-50">Order #</th>
+          <th class="bg-gray-50">User</th>
+          <th class="bg-gray-50">Amount</th>
+          <th class="bg-gray-50">Reason</th>
+          <th class="bg-gray-50">Status</th>
+          <th class="bg-gray-50 text-center" style="width: 200px">Actions</th>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="body" let-refund>
+        @if (loading()) {
+          <tr>
+            <td><p-skeleton width="6rem" height="1.25rem"></p-skeleton></td>
+            <td><p-skeleton width="8rem" height="1.25rem"></p-skeleton></td>
+            <td><p-skeleton width="5rem" height="1.25rem"></p-skeleton></td>
+            <td><p-skeleton width="12rem" height="1.25rem"></p-skeleton></td>
+            <td><p-skeleton width="5rem" height="1.5rem" borderRadius="1rem"></p-skeleton></td>
+            <td>
+              <div class="flex justify-content-center gap-2">
+                <p-skeleton width="100%" height="2.5rem"></p-skeleton>
+              </div>
+            </td>
+          </tr>
+        } @else {
+          <tr>
+            <td class="font-bold text-primary">{{ getOrderNumber(refund) }}</td>
+            <td>{{ getUserName(refund) }}</td>
+            <td class="font-semibold text-900">{{ refund.refundedAmount | currency }}</td>
+            <td>
+              <div
+                class="text-700 max-w-15rem overflow-hidden text-overflow-ellipsis white-space-nowrap"
+                [pTooltip]="refund.reason"
+              >
+                {{ refund.reason }}
+              </div>
+            </td>
+            <td>
+              <p-tag
+                [value]="refund.status"
+                [severity]="getStatusSeverity(refund.status)"
+                [rounded]="true"
+              />
+            </td>
+            <td>
+              <div class="flex gap-2 justify-content-center">
+                @if (refund.status === 'pending') {
+                  <p-button
+                    label="Approve"
+                    icon="pi pi-check"
+                    [rounded]="true"
+                    [text]="true"
+                    severity="success"
+                    (onClick)="approveRefund(refund)"
+                  />
+                  <p-button
+                    label="Refuse"
+                    icon="pi pi-times"
+                    [rounded]="true"
+                    [text]="true"
+                    severity="danger"
+                    (onClick)="refuseRefund(refund)"
+                  />
+                } @else {
+                  <span class="text-xs text-500 font-italic">Processed</span>
+                }
+              </div>
+            </td>
+          </tr>
+        }
+      </ng-template>
+
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="6" class="text-center p-5">
+            <div class="flex flex-column align-items-center gap-3">
+              <i class="pi pi-receipt text-4xl text-400"></i>
+              <span class="text-600 font-medium">No refund requests found.</span>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</div>
+
+<p-confirmDialog />
+<p-toast position="bottom-right" />

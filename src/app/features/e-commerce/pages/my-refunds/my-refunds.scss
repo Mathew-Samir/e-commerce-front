@@ -1,0 +1,92 @@
+.my-refunds-container {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  min-height: calc(100vh - 200px);
+
+  .header {
+    margin-bottom: 2rem;
+    
+    h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--text-color, #333);
+      margin-bottom: 0.5rem;
+    }
+
+    p {
+      color: var(--text-color-secondary, #666);
+    }
+  }
+
+  .card {
+    background: #ffffff;
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  }
+
+  .reason-text {
+    display: block;
+    max-width: 200px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .view-link {
+    color: var(--primary-color, #007bff);
+    text-decoration: none;
+    font-weight: 600;
+    
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  .empty-message {
+    text-align: center;
+    padding: 3rem !important;
+    color: #999;
+    font-style: italic;
+  }
+
+  :host ::v-deep {
+    .p-datatable {
+      .p-datatable-thead > tr > th {
+        background: #f8f9fa;
+        color: #495057;
+        font-weight: 600;
+        padding: 1rem;
+      }
+
+      .p-datatable-tbody > tr {
+        transition: background 0.2s;
+        
+        &:hover {
+          background: #f1f3f5;
+        }
+
+        > td {
+          padding: 1rem;
+        }
+      }
+    }
+
+    .p-tag {
+      font-weight: 500;
+      padding: 0.25rem 0.75rem;
+    }
+  }
+}
+
+@media screen and (max-width: 960px) {
+  .my-refunds-container {
+    padding: 1rem;
+    
+    .reason-text {
+      max-width: none;
+      white-space: normal;
+    }
+  }
+}

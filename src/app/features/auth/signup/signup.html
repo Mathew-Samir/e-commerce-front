@@ -1,0 +1,133 @@
+<div class="signup-container">
+  <div class="signup-card">
+    <h2>Create Account</h2>
+    <p class="subtitle">Join our community today</p>
+
+    <form [formGroup]="signupForm" (ngSubmit)="onSubmit()" class="flex flex-column gap-4">
+      @if (errorMessage()) {
+        <p-message severity="error" [text]="errorMessage()!" styleClass="w-full" />
+      }
+
+      <!-- Name -->
+      <div class="field">
+        <p-floatLabel>
+          <input pInputText id="name" formControlName="name" class="w-full" />
+          <label for="name">Full Name</label>
+        </p-floatLabel>
+        @if (f['name'].touched && f['name'].errors?.['required']) {
+          <p-message severity="error" text="Name is required" />
+        }
+        @if (f['name'].touched && f['name'].errors?.['minlength']) {
+          <p-message severity="error" text="Minimum 2 characters" />
+        }
+        @if (f['name'].touched && f['name'].errors?.['maxlength']) {
+          <p-message severity="error" text="Maximum 60 characters" />
+        }
+      </div>
+
+      <!-- Mobile -->
+      <div class="field">
+        <p-floatLabel>
+          <input pInputText id="mobile" formControlName="mobile" class="w-full" />
+          <label for="mobile">Mobile Number</label>
+        </p-floatLabel>
+        @if (f['mobile'].touched && f['mobile'].errors?.['required']) {
+          <p-message severity="error" text="Mobile is required" />
+        }
+      </div>
+
+      <!-- Email -->
+      <div class="field">
+        <p-floatLabel>
+          <input pInputText id="email" formControlName="email" class="w-full" />
+          <label for="email">Email (Optional)</label>
+        </p-floatLabel>
+        @if (f['email'].touched && f['email'].errors?.['email']) {
+          <p-message severity="error" text="Invalid email format" />
+        }
+      </div>
+
+      <!-- Password -->
+      <div class="field">
+        <p-floatLabel>
+          <p-password
+            id="password"
+            formControlName="password"
+            [toggleMask]="true"
+            styleClass="w-full"
+            inputStyleClass="w-full"
+          />
+          <label for="password">Password</label>
+        </p-floatLabel>
+        @if (f['password'].touched && f['password'].errors?.['required']) {
+          <p-message severity="error" text="Password is required" />
+        }
+        @if (f['password'].touched && f['password'].errors?.['minlength']) {
+          <p-message severity="error" text="Minimum 8 characters" />
+        }
+      </div>
+
+      <!-- Gender -->
+      <div class="field">
+        <label class="block mb-2 font-medium">Gender (Optional)</label>
+        <div class="flex flex-wrap gap-4">
+          <div class="flex items-center">
+            <p-radioButton name="gender" value="male" formControlName="gender" inputId="male" />
+            <label for="male" class="ml-2">Male</label>
+          </div>
+          <div class="flex items-center">
+            <p-radioButton name="gender" value="female" formControlName="gender" inputId="female" />
+            <label for="female" class="ml-2">Female</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Terms and Conditions -->
+      <div class="field">
+        <div class="flex items-center gap-2">
+          <p-checkbox formControlName="termsAccepted" [binary]="true" inputId="terms" />
+          <label for="terms">
+            I accept the
+            <a
+              href="javascript:void(0)"
+              (click)="showTermsDialog.set(true)"
+              class="text-primary font-medium hover:underline"
+            >
+              terms and conditions
+            </a>
+          </label>
+        </div>
+        @if (f['termsAccepted'].touched && f['termsAccepted'].errors?.['required']) {
+          <p-message severity="error" text="You must accept the terms" />
+        }
+      </div>
+
+      <!-- Submit Button -->
+      <p-button
+        label="Register"
+        type="submit"
+        [disabled]="signupForm.invalid"
+        [loading]="isSubmitting()"
+        class="w-full"
+        styleClass="w-full"
+      />
+
+      <p class="text-center mt-3">Already have an account? <a routerLink="/auth/login">Login</a></p>
+    </form>
+  </div>
+</div>
+
+<p-dialog
+  header="Terms and Conditions"
+  [(visible)]="showTermsDialog"
+  [modal]="true"
+  [breakpoints]="{ '960px': '75vw', '641px': '90vw' }"
+  [style]="{ width: '50vw' }"
+  [draggable]="false"
+  [resizable]="false"
+>
+  <app-terms-and-conditions />
+  <ng-template pTemplate="footer">
+    <p-button label="Close" icon="pi pi-check" (click)="showTermsDialog.set(false)" />
+  </ng-template>
+</p-dialog>

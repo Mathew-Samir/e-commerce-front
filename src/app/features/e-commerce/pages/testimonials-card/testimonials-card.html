@@ -1,0 +1,32 @@
+<p-card class="testimonial-card-container">
+  <div class="testimonial-card-content">
+    <div class="testimonial-header">
+      <div class="user-info">
+        <p-avatar
+          [image]="testimonial().avatar"
+          shape="circle"
+          size="xlarge"
+          class="user-avatar">
+        </p-avatar>
+        <div class="user-details">
+          <h3 class="user-name">{{ testimonial().name }}</h3>
+          <span class="testimonial-date" *ngIf="testimonial().date">{{ testimonial().date }}</span>
+        </div>
+      </div>
+      <div class="rating-container">
+        <p-rating
+          [ngModel]="testimonial().rating"
+          [readonly]="true"
+          [stars]="5">
+        </p-rating>
+
+      </div>
+    </div>
+
+    <div class="testimonial-body">
+      <i class="pi pi-quote-left quote-icon"></i>
+      <p class="testimonial-text">{{ testimonial().content }}</p>
+    </div>
+  </div>
+</p-card>
+

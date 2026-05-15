@@ -1,0 +1,166 @@
+<div class="product-list-page">
+  <div class="container">
+    <div class="page-header">
+      <h1>Our Collection</h1>
+      <p>Discover our range of premium products</p>
+    </div>
+
+    <div class="filter-bar">
+      <div class="search-container">
+        <p-iconfield>
+          <p-inputicon class="pi pi-search" />
+          <input
+            type="text"
+            pInputText
+            placeholder="Search products..."
+            [ngModel]="searchTerm()"
+            (ngModelChange)="searchTerm.set($event)"
+          />
+        </p-iconfield>
+      </div>
+
+      <div class="filters-container">
+        <div class="filter-group">
+          <p-select
+            [options]="sortOptions"
+            [ngModel]="selectedSort()"
+            (ngModelChange)="selectedSort.set($event)"
+            placeholder="Sort by"
+            [showClear]="true"
+            styleClass="w-full md:w-15rem"
+          />
+        </div>
+
+
+      </div>
+    </div>
+
+    @if (isLoading()) {
+      <div class="loading-state" style="text-align: center; padding: 3rem">
+        <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
+        <p>Loading products...</p>
+      </div>
+    } @else {
+      <div class="product-grid">
+        @for (product of filteredProducts(); track product._id) {
+          <div class="product-item">
+            <div class="product-card">
+              <div class="product-image-container">
+                <img [src]="product.image" [alt]="product.name" class="product-image" />
+                <p-tag
+                  [value]="getStockStatus(product.stock)"
+                  [severity]="getSeverity(product.stock)"
+                  class="status-tag"
+                ></p-tag>
+              </div>
+              <div class="product-info">
+                <div
+                  class="product-categories"
+                  style="font-size: 0.8rem; color: #666; margin-bottom: 0.5rem"
+                >
+                  @if (product.categoryId?.title) {
+                    <span>{{ product.categoryId?.title }}</span>
+                  }
+                  @if (product.subCategoryId?.title) {
+                    <span> - {{ product.subCategoryId?.title }}</span>
+                  }
+                </div>
+                <h4 class="product-name">{{ product.name }}</h4>
+                <div class="product-footer">
+                  <span class="product-price">{{ '$' + product.price }}</span>
+                  <div class="product-actions">
+                    <p-button
+                      icon="pi pi-eye"
+                      [outlined]="true"
+                      class="view-btn"
+                      (click)="showProductDetails(product)"
+                    />
+                    <p-button icon="pi pi-heart" [outlined]="true" class="wishlist-btn" />
+                    <p-button
+                      icon="pi pi-shopping-cart"
+                      class="cart-btn"
+                      (onClick)="addToCart(product)"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        } @empty {
+          <div class="empty-results">
+            <i class="pi pi-search"></i>
+            @if (error()) {
+              <h3>{{ error() }}</h3>
+            } @else {
+              <h3>No products found</h3>
+              <p>Try adjusting your search or filters to find what you're looking for.</p>
+            }
+            <p-button
+              label="Clear All Filters"
+              (click)="searchTerm.set(''); selectedSort.set(null)"
+              severity="secondary"
+              [text]="true"
+            />
+          </div>
+        }
+      </div>
+    }
+  </div>
+
+  <p-dialog
+    [visible]="displayDialog()"
+    (visibleChange)="displayDialog.set($event)"
+    [modal]="true"
+    [draggable]="false"
+    [resizable]="false"
+    header="Product Details"
+    styleClass="product-details-dialog"
+    [breakpoints]="{ '960px': '75vw', '640px': '90vw' }"
+    [style]="{ width: '50vw' }"
+  >
+    @if (selectedProduct(); as product) {
+      <div class="product-details-content">
+        <div class="details-image">
+          <img [src]="product.image" [alt]="product.name" />
+        </div>
+        <div class="details-info">
+          <div class="details-header">
+            <h2>{{ product.name }}</h2>
+            <p-tag
+              [value]="getStockStatus(product.stock)"
+              [severity]="getSeverity(product.stock)"
+            ></p-tag>
+          </div>
+          <div
+            class="product-categories"
+            style="font-size: 0.9rem; color: #666; margin-bottom: 1rem"
+          >
+            @if (product.categoryId?.title) {
+              <span style="font-weight: 600">Category:</span> {{ product.categoryId?.title }}
+            }
+            @if (product.subCategoryId?.title) {
+              <span style="font-weight: 600; margin-left: 1rem">Subcategory:</span>
+              {{ product.subCategoryId?.title }}
+            }
+          </div>
+          <p class="price">{{ '$' + product.price }}</p>
+          <p class="description">{{ product.description }}</p>
+          <div class="dialog-actions">
+            <p-button
+              icon="pi pi-shopping-cart"
+              label="Add to Cart"
+              class="p-button-lg"
+              (onClick)="addToCart(product)"
+            />
+            <p-button
+              icon="pi pi-heart"
+              [outlined]="true"
+              label="Add to Wishlist"
+              class="p-button-lg"
+            />
+          </div>
+        </div>
+      </div>
+    }
+  </p-dialog>
+</div>

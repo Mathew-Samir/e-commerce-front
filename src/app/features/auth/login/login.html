@@ -1,0 +1,55 @@
+<div class="login-container">
+  <div class="login-card">
+    <h2>Welcome Back</h2>
+    <p class="subtitle">Please login to your account</p>
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="flex flex-column gap-4">
+      @if (errorMessage()) {
+        <p-message severity="error" [text]="errorMessage()!" styleClass="w-full" />
+      }
+
+      <!-- Mobile -->
+      <div class="field">
+        <p-floatLabel>
+          <input pInputText id="mobile" formControlName="mobile" class="w-full" />
+          <label for="mobile">Mobile Number</label>
+        </p-floatLabel>
+        @if (f['mobile'].touched && f['mobile'].errors?.['required']) {
+          <p-message severity="error" text="Mobile is required" />
+        }
+      </div>
+
+      <!-- Password -->
+      <div class="field">
+        <p-floatLabel>
+          <p-password
+            id="password"
+            formControlName="password"
+            [toggleMask]="true"
+            [feedback]="false"
+            styleClass="w-full"
+            inputStyleClass="w-full"
+          />
+          <label for="password">Password</label>
+        </p-floatLabel>
+        @if (f['password'].touched && f['password'].errors?.['required']) {
+          <p-message severity="error" text="Password is required" />
+        }
+      </div>
+
+      <!-- Submit Button -->
+      <p-button
+        label="Login"
+        type="submit"
+        [disabled]="loginForm.invalid"
+        [loading]="isSubmitting()"
+        class="w-full"
+        styleClass="w-full"
+      />
+
+      <p class="text-center mt-3">
+        Don't have an account? <a routerLink="/auth/signup">Sign Up</a>
+      </p>
+    </form>
+  </div>
+</div>

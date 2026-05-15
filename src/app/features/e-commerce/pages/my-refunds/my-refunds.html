@@ -1,0 +1,66 @@
+<div class="my-refunds-container">
+  <div class="header">
+    <h1>My Refund Requests</h1>
+    <p>Track the status of your refund requests here.</p>
+  </div>
+
+  <div class="card">
+    <p-table
+      [value]="refunds()"
+      [loading]="isLoading()"
+      [responsiveLayout]="'stack'"
+      [breakpoint]="'960px'"
+      [rows]="10"
+      [paginator]="true"
+      styleClass="p-datatable-striped"
+    >
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Order Number</th>
+          <th>Date</th>
+          <th>Amount</th>
+          <th>Reason</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-refund>
+        <tr>
+          <td>
+            <span class="p-column-title">Order Number</span>
+            {{ getOrderNumber(refund.orderId) }}
+          </td>
+          <td>
+            <span class="p-column-title">Date</span>
+            {{ refund.createdAt | date: 'mediumDate' }}
+          </td>
+          <td>
+            <span class="p-column-title">Amount</span>
+            {{ refund.refundedAmount | currency }}
+          </td>
+          <td>
+            <span class="p-column-title">Reason</span>
+            <span class="reason-text" [title]="refund.reason">{{ refund.reason }}</span>
+          </td>
+          <td>
+            <span class="p-column-title">Status</span>
+            <p-tag [value]="refund.status" [severity]="getSeverity(refund.status)" />
+          </td>
+          <td>
+            <span class="p-column-title">Actions</span>
+            <a [routerLink]="['/order', getOrderId(refund.orderId)]" class="view-link">
+              View Order
+            </a>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="6" class="empty-message">
+            No refund requests found.
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</div>

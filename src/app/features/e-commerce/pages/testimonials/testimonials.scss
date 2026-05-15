@@ -1,0 +1,33 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.share-card {
+  border-radius: 1rem !important;
+  overflow: hidden;
+  
+  ::ng-deep .p-card-body {
+    padding: 1.5rem !important;
+  }
+}
+
+textarea {
+  resize: none;
+  &:focus {
+    box-shadow: 0 0 0 0.2rem rgba(var(--primary-color-rgb), 0.1) !important;
+  }
+}
+
+.max-width-30rem {
+  max-width: 30rem;
+}
+
+// Ensure the rating stars are properly sized
+::ng-deep .p-rating {
+  gap: 0.25rem;
+  .p-rating-icon {
+    font-size: 1.25rem;
+    color: #f59e0b; // Amber-500
+  }
+}

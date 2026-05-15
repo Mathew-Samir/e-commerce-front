@@ -1,0 +1,265 @@
+<div class="products-container">
+  <!-- Header & Export -->
+  <div class="header-section">
+    <div>
+      <h2>Sales Reports</h2>
+      <p>Analyze and export your sales data</p>
+    </div>
+    <div class="flex gap-3">
+      <p-button
+        icon="pi pi-download"
+        label="Export CSV"
+        (onClick)="exportReport()"
+        styleClass="p-button-success p-button-raised border-round-lg shadow-2"
+        [loading]="loading()"
+      ></p-button>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="filters-section">
+    <span class="p-input-icon-left flex-1">
+      <i class="pi pi-calendar"></i>
+      <p-datepicker
+        [(ngModel)]="dateRange"
+        selectionMode="range"
+        [readonlyInput]="true"
+        placeholder="Filter by date range"
+        styleClass="w-full"
+        (onSelect)="onDateSelect()"
+        [showIcon]="false"
+      ></p-datepicker>
+    </span>
+    @if (dateRange()) {
+      <p-button
+        icon="pi pi-filter-slash"
+        label="Clear"
+        [text]="true"
+        severity="secondary"
+        (onClick)="clearFilters()"
+      ></p-button>
+    }
+  </div>
+
+  <!-- Summary Cards -->
+  <div class="summary-cards">
+    <div class="summary-card">
+      <div class="icon-container revenue">
+        <i class="pi pi-money-bill"></i>
+      </div>
+      <div class="content">
+        <span class="label">Total Revenue</span>
+        <span class="value">{{ (reportData()?.summary?.totalRevenue || 0) | currency }}</span>
+      </div>
+    </div>
+
+    <div class="summary-card">
+      <div class="icon-container orders">
+        <i class="pi pi-shopping-cart"></i>
+      </div>
+      <div class="content">
+        <span class="label">Total Orders</span>
+        <span class="value">{{ reportData()?.summary?.totalOrders || 0 }}</span>
+      </div>
+    </div>
+
+    <div class="summary-card">
+      <div class="icon-container avg">
+        <i class="pi pi-chart-line"></i>
+      </div>
+      <div class="content">
+        <span class="label">Avg. Order Value</span>
+        <span class="value">{{ (reportData()?.summary?.avgOrderValue || 0) | currency }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Charts Section -->
+  <div class="charts-section">
+    <div class="chart-card">
+      <h3>Top Selling Products</h3>
+      <div style="height: 300px">
+        <p-chart type="bar" [data]="topProductsData()" [options]="chartOptions"></p-chart>
+      </div>
+    </div>
+    <div class="chart-card">
+      <h3>Order Status Breakdown</h3>
+      <div style="height: 300px">
+        <p-chart type="pie" [data]="statusBreakdownData()" [options]="chartOptions"></p-chart>
+      </div>
+    </div>
+  </div>
+
+  <!-- Detailed Table -->
+  <div class="card shadow-4 border-round-xl overflow-hidden bg-white">
+    <div class="p-4 border-bottom-1 border-300 flex justify-content-between align-items-center">
+      <h3 class="m-0">Detailed Sales Log</h3>
+    </div>
+    <p-table
+      [value]="loading() ? skeletonRows : exportData()"
+      [paginator]="!loading()"
+      [rows]="10"
+      [responsiveLayout]="'scroll'"
+      styleClass="p-datatable-sm"
+      [showCurrentPageReport]="true"
+      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+    >
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Order ID</th>
+          <th>Customer</th>
+          <th>Date</th>
+          <th>Total</th>
+          <th>Status</th>
+          <th>Items</th>
+          <th style="width: 100px">Details</th>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="body" let-report>
+        @if (loading()) {
+          <tr>
+            <td><p-skeleton width="80%" height="1.25rem"></p-skeleton></td>
+            <td><p-skeleton width="10rem" height="1.25rem"></p-skeleton></td>
+            <td><p-skeleton width="6rem" height="1.25rem"></p-skeleton></td>
+            <td><p-skeleton width="5rem" height="1.5rem"></p-skeleton></td>
+            <td><p-skeleton width="6rem" height="1.5rem" borderRadius="1rem"></p-skeleton></td>
+            <td><p-skeleton width="3rem" height="1.25rem"></p-skeleton></td>
+            <td><p-skeleton width="3rem" height="1.25rem"></p-skeleton></td>
+          </tr>
+        } @else {
+          <tr>
+            <td>
+              <span class="font-bold text-900">{{ report.orderId }}</span>
+            </td>
+            <td>
+              <div class="flex flex-column gap-1">
+                <span class="font-medium text-900">{{ report.customer }}</span>
+                <span class="text-xs text-500">{{ report.mobile }}</span>
+              </div>
+            </td>
+            <td>
+              <span class="text-600">{{ report.date | date: 'mediumDate' }}</span>
+            </td>
+            <td>
+              <span class="font-semibold text-primary text-lg">{{ report.total | currency }}</span>
+            </td>
+            <td>
+              <p-tag [value]="getStatusLabel(report.status)" [severity]="getStatusSeverity(report.status)"></p-tag>
+            </td>
+            <td>
+              <span class="text-700">{{ report.productCount }}</span>
+            </td>
+            <td>
+              <p-button 
+                icon="pi pi-eye" 
+                [text]="true" 
+                [rounded]="true" 
+                severity="secondary" 
+                (onClick)="viewDetails(report)"
+                pTooltip="View Full Details" />
+            </td>
+          </tr>
+        }
+      </ng-template>
+
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="6" class="text-center p-8">
+            <div class="flex flex-column align-items-center gap-4">
+              <div
+                class="w-8rem h-8rem border-circle bg-gray-50 flex align-items-center justify-content-center shadow-inset"
+              >
+                <i class="pi pi-chart-bar text-6xl text-200"></i>
+              </div>
+              <div class="flex flex-column gap-2">
+                <span class="text-xl font-bold text-900">No reports available</span>
+                <span class="text-600">There are no sales data to display for the selected filters.</span>
+              </div>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</div>
+
+<p-toast />
+
+<!-- Details Dialog -->
+<p-dialog 
+  [(visible)]="detailsDialog" 
+  [header]="'Order Details - #' + (selectedOrder()?.orderId?.substring(selectedOrder()!.orderId.length - 8))" 
+  [modal]="true" 
+  [style]="{ width: '600px' }"
+  styleClass="order-details-dialog">
+  
+  @if (selectedOrder()) {
+    <div class="details-content flex flex-column gap-4">
+      <!-- Customer Info Section -->
+      <div class="details-section">
+        <h4 class="m-0 mb-3 text-primary flex align-items-center gap-2">
+          <i class="pi pi-user"></i> Customer Information
+        </h4>
+        <div class="grid p-fluid">
+          <div class="col-12 md:col-6">
+            <label class="text-500 text-xs font-bold uppercase">Name</label>
+            <div class="text-900 font-medium">{{ selectedOrder()?.customer }}</div>
+          </div>
+          <div class="col-12 md:col-6">
+            <label class="text-500 text-xs font-bold uppercase">Phone Number</label>
+            <div class="text-900 font-medium">{{ selectedOrder()?.mobile }}</div>
+          </div>
+          <div class="col-12 mt-2">
+            <label class="text-500 text-xs font-bold uppercase">Shipping Address</label>
+            <div class="text-900 font-medium line-height-3">{{ selectedOrder()?.address }}</div>
+          </div>
+        </div>
+      </div>
+
+      <hr class="border-300 border-top-1 m-0" />
+
+      <!-- Order Info Section -->
+      <div class="details-section">
+        <h4 class="m-0 mb-3 text-primary flex align-items-center gap-2">
+          <i class="pi pi-receipt"></i> Order Summary
+        </h4>
+        <div class="grid p-fluid">
+          <div class="col-6">
+            <label class="text-500 text-xs font-bold uppercase">Date</label>
+            <div class="text-900 font-medium">{{ selectedOrder()?.date | date: 'longDate' }}</div>
+          </div>
+          <div class="col-6">
+            <label class="text-500 text-xs font-bold uppercase">Status</label>
+            <div>
+              <p-tag [value]="getStatusLabel(selectedOrder()!.status)" [severity]="getStatusSeverity(selectedOrder()!.status)" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Products Section -->
+      <div class="details-section bg-gray-50 p-3 border-round-lg">
+        <h4 class="m-0 mb-3 flex align-items-center gap-2 text-700">
+          <i class="pi pi-box"></i> Items Purchased
+        </h4>
+        <div class="text-800 line-height-4">
+          {{ selectedOrder()?.productNames }}
+        </div>
+        <div class="mt-3 pt-3 border-top-1 border-200 flex justify-content-between align-items-center">
+          <span class="text-xl font-bold">Total Amount</span>
+          <span class="text-2xl font-bold text-primary">{{ selectedOrder()?.total | currency }}</span>
+        </div>
+      </div>
+    </div>
+  }
+
+  <ng-template pTemplate="footer">
+    <p-button 
+      label="Close" 
+      icon="pi pi-times" 
+      [text]="true" 
+      severity="secondary" 
+      (onClick)="detailsDialog.set(false)" />
+  </ng-template>
+</p-dialog>

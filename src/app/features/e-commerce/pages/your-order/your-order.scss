@@ -1,0 +1,255 @@
+:host {
+  display: block;
+  min-height: 100vh;
+  background-color: var(--bg-secondary);
+  padding: 3rem 1.5rem;
+}
+
+.order-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.order-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+
+  .header-titles {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    h1 {
+      margin: 0;
+      font-size: 2.25rem;
+      font-weight: 800;
+      color: var(--success-color);
+      letter-spacing: -0.02em;
+    }
+
+    .order-meta {
+      margin: 0;
+      font-size: 1rem;
+      color: var(--text-muted);
+
+      strong {
+        color: var(--text-main);
+      }
+    }
+  }
+
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+
+    .status-tag {
+      ::ng-deep .p-tag {
+        font-size: 0.9rem;
+        padding: 0.4rem 1rem;
+        border-radius: var(--radius-full);
+        font-weight: 600;
+      }
+    }
+  }
+}
+
+.order-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+
+  @media (min-width: 992px) {
+    grid-template-columns: 2fr 1fr;
+  }
+}
+
+.card-title {
+  margin: 0;
+  padding: 1.5rem 1.5rem 0 1.5rem;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+::ng-deep {
+  .items-card .p-card,
+  .summary-card .p-card,
+  .info-card .p-card {
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border-color);
+    background: var(--bg-primary);
+
+    .p-card-body,
+    .p-card-content {
+      padding: 0;
+    }
+  }
+}
+
+.items-list {
+  padding: 0 1.5rem 1.5rem 1.5rem;
+}
+
+.order-item {
+  display: flex;
+  gap: 1.5rem;
+  padding: 1.25rem 0;
+  align-items: center;
+
+  .item-image-wrapper {
+    width: 80px;
+    height: 80px;
+    border-radius: var(--radius-md);
+    background-color: var(--bg-muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    flex-shrink: 0;
+
+    .item-image {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+  }
+
+  .item-details {
+    flex-grow: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+
+    .item-info {
+      .item-name {
+        margin: 0 0 0.25rem 0;
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: var(--text-main);
+      }
+
+      .item-category {
+        margin: 0;
+        font-size: 0.9rem;
+        color: var(--text-muted);
+      }
+    }
+
+    .item-pricing {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      text-align: right;
+
+      .item-quantity,
+      .item-price {
+        font-size: 0.95rem;
+        color: var(--text-muted);
+      }
+
+      .item-total {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--text-main);
+        min-width: 80px;
+      }
+    }
+  }
+}
+
+.summary-details {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+
+  .summary-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .summary-label {
+      color: var(--text-muted);
+      font-size: 1rem;
+    }
+
+    .summary-value {
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    &.total-row {
+      margin-top: 0.5rem;
+      
+      .summary-label {
+        font-size: 1.15rem;
+        font-weight: 700;
+        color: var(--text-main);
+      }
+      
+      .summary-value {
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: var(--accent-color);
+      }
+    }
+  }
+}
+
+.mt-4 {
+  margin-top: 1.5rem;
+}
+
+.info-section {
+  padding: 1.5rem;
+
+  .info-subtitle {
+    margin: 0 0 1rem 0;
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--text-main);
+  }
+
+  .info-text {
+    margin: 0;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--text-muted);
+  }
+
+  .payment-method {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+
+    .payment-icon {
+      font-size: 1.5rem;
+      color: var(--text-main);
+    }
+  }
+}
+
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 50vh;
+  gap: 1rem;
+  color: var(--text-muted);
+
+  p {
+    margin: 0;
+    font-weight: 500;
+  }
+}

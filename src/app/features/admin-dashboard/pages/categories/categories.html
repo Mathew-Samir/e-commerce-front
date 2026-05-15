@@ -1,0 +1,201 @@
+<div class="categories-management-container">
+  <p-toast />
+  <p-confirmDialog />
+
+  <div class="header-section">
+    <div class="title-group">
+      <h1>Category & Subcategory Management</h1>
+      <p>Manage your product taxonomy and organization</p>
+    </div>
+  </div>
+
+  <div class="grid-layout">
+    <!-- Categories Section -->
+    <div class="section-card">
+      <div class="section-header">
+        <h2>Categories</h2>
+        <p-button 
+          label="New Category" 
+          icon="pi pi-plus" 
+          severity="primary" 
+          (onClick)="openNewCategory()" />
+      </div>
+
+      <p-table 
+        [value]="loading() ? skeletonRows : categories()" 
+        [rows]="5" 
+        [paginator]="true" 
+        styleClass="p-datatable-sm"
+        responsiveLayout="scroll">
+        <ng-template pTemplate="header">
+          <tr>
+            <th>Title</th>
+            <th>Status</th>
+            <th style="width: 120px">Actions</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-category>
+          @if (loading()) {
+            <tr>
+              <td><p-skeleton width="100%" /></td>
+              <td><p-skeleton width="60px" /></td>
+              <td><p-skeleton width="80px" /></td>
+            </tr>
+          } @else {
+            <tr>
+              <td>{{ category.title }}</td>
+              <td>
+                <p-tag 
+                  [severity]="category.isActive ? 'success' : 'secondary'" 
+                  [value]="category.isActive ? 'Active' : 'Inactive'" 
+                  class="cursor-pointer"
+                  (click)="toggleCategoryActive(category)" />
+              </td>
+              <td class="actions-cell">
+                <p-button 
+                  icon="pi pi-pencil" 
+                  severity="secondary" 
+                  [rounded]="true" 
+                  [text]="true"
+                  (onClick)="editCategory(category)" 
+                  pTooltip="Edit Category" />
+                <p-button 
+                  icon="pi pi-trash" 
+                  severity="danger" 
+                  [rounded]="true" 
+                  [text]="true"
+                  (onClick)="deleteCategory(category)" 
+                  pTooltip="Delete Category" />
+              </td>
+            </tr>
+          }
+        </ng-template>
+      </p-table>
+    </div>
+
+    <!-- Subcategories Section -->
+    <div class="section-card">
+      <div class="section-header">
+        <h2>Subcategories</h2>
+        <p-button 
+          label="New Subcategory" 
+          icon="pi pi-plus" 
+          severity="primary" 
+          (onClick)="openNewSubcategory()" />
+      </div>
+
+      <p-table 
+        [value]="loading() ? skeletonRows : subCategories()" 
+        [rows]="5" 
+        [paginator]="true" 
+        styleClass="p-datatable-sm"
+        responsiveLayout="scroll">
+        <ng-template pTemplate="header">
+          <tr>
+            <th>Title</th>
+            <th>Parent Category</th>
+            <th>Status</th>
+            <th style="width: 120px">Actions</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-sub>
+          @if (loading()) {
+            <tr>
+              <td><p-skeleton width="100%" /></td>
+              <td><p-skeleton width="100%" /></td>
+              <td><p-skeleton width="60px" /></td>
+              <td><p-skeleton width="80px" /></td>
+            </tr>
+          } @else {
+            <tr>
+              <td>{{ sub.title }}</td>
+              <td>{{ getCategoryName(sub.categoryId) }}</td>
+              <td>
+                <p-tag 
+                  [severity]="sub.isActive ? 'success' : 'secondary'" 
+                  [value]="sub.isActive ? 'Active' : 'Inactive'" 
+                  class="cursor-pointer"
+                  (click)="toggleSubcategoryActive(sub)" />
+              </td>
+              <td class="actions-cell">
+                <p-button 
+                  icon="pi pi-pencil" 
+                  severity="secondary" 
+                  [rounded]="true" 
+                  [text]="true"
+                  (onClick)="editSubcategory(sub)" 
+                  pTooltip="Edit Subcategory" />
+                <p-button 
+                  icon="pi pi-trash" 
+                  severity="danger" 
+                  [rounded]="true" 
+                  [text]="true"
+                  (onClick)="deleteSubcategory(sub)" 
+                  pTooltip="Delete Subcategory" />
+              </td>
+            </tr>
+          }
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+
+  <!-- Category Dialog -->
+  <p-dialog 
+    [(visible)]="categoryDialog" 
+    [header]="isEdit() ? 'Edit Category' : 'New Category'" 
+    [modal]="true" 
+    [style]="{ width: '450px' }">
+    <form [formGroup]="categoryForm" (ngSubmit)="saveCategory()" class="dialog-form">
+      <div class="field">
+        <label for="title">Title</label>
+        <input pInputText id="title" formControlName="title" required autofocus />
+        @if (categoryForm.get('title')?.invalid && categoryForm.get('title')?.touched) {
+          <small class="p-error">Title is required.</small>
+        }
+      </div>
+      <div class="field">
+        <label for="description">Description</label>
+        <input pInputText id="description" formControlName="description" />
+      </div>
+      <div class="dialog-footer">
+        <p-button label="Cancel" severity="secondary" [text]="true" (onClick)="categoryDialog.set(false)" />
+        <p-button label="Save" type="submit" [disabled]="categoryForm.invalid" />
+      </div>
+    </form>
+  </p-dialog>
+
+  <!-- Subcategory Dialog -->
+  <p-dialog 
+    [(visible)]="subcategoryDialog" 
+    [header]="isEdit() ? 'Edit Subcategory' : 'New Subcategory'" 
+    [modal]="true" 
+    [style]="{ width: '450px' }">
+    <form [formGroup]="subcategoryForm" (ngSubmit)="saveSubcategory()" class="dialog-form">
+      <div class="field">
+        <label for="sub-title">Title</label>
+        <input pInputText id="sub-title" formControlName="title" required autofocus />
+        @if (subcategoryForm.get('title')?.invalid && subcategoryForm.get('title')?.touched) {
+          <small class="p-error">Title is required.</small>
+        }
+      </div>
+      <div class="field">
+        <label for="categoryId">Parent Category</label>
+        <p-select 
+          [options]="categories()" 
+          formControlName="categoryId" 
+          optionLabel="title" 
+          optionValue="_id" 
+          placeholder="Select a Category"
+          styleClass="w-full" />
+        @if (subcategoryForm.get('categoryId')?.invalid && subcategoryForm.get('categoryId')?.touched) {
+          <small class="p-error">Category is required.</small>
+        }
+      </div>
+      <div class="dialog-footer">
+        <p-button label="Cancel" severity="secondary" [text]="true" (onClick)="subcategoryDialog.set(false)" />
+        <p-button label="Save" type="submit" [disabled]="subcategoryForm.invalid" />
+      </div>
+    </form>
+  </p-dialog>
+</div>

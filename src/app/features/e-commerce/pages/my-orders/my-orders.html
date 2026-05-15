@@ -1,0 +1,68 @@
+<div class="my-orders-container">
+  <div class="header">
+    <h1>My Orders</h1>
+    <p>Track and manage your recent purchases</p>
+  </div>
+
+  <div class="card">
+    <p-table
+      [value]="orders()"
+      [loading]="isLoading()"
+      [rows]="10"
+      [paginator]="true"
+      responsiveLayout="stack"
+      breakpoint="960px"
+      styleClass="p-datatable-sm"
+    >
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Order #</th>
+          <th>Date</th>
+          <th>Total</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-order>
+        <tr>
+          <td>
+            <span class="p-column-title">Order #</span>
+            <span class="font-bold">#{{ order._id.substring(order._id.length - 8) }}</span>
+          </td>
+          <td>
+            <span class="p-column-title">Date</span>
+            {{ order.createdAt | date: 'mediumDate' }}
+          </td>
+          <td>
+            <span class="p-column-title">Total</span>
+            <span class="font-bold text-primary">{{ order.totalPrice | currency }}</span>
+          </td>
+          <td>
+            <span class="p-column-title">Status</span>
+            <p-tag [value]="getStatusLabel(order.status)" [severity]="getSeverity(order.status)" />
+          </td>
+          <td>
+            <span class="p-column-title">Actions</span>
+            <p-button
+              icon="pi pi-eye"
+              [outlined]="true"
+              label="View Details"
+              [routerLink]="['/order', order._id]"
+            />
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="5">
+            <div class="empty-state">
+              <i class="pi pi-shopping-bag"></i>
+              <p>You haven't placed any orders yet.</p>
+              <p-button label="Start Shopping" routerLink="/product-list" />
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</div>

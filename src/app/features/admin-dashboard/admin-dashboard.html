@@ -1,0 +1,85 @@
+<div class="admin-layout flex h-screen overflow-hidden bg-gray-50">
+  <!-- Sidebar -->
+  <aside
+    class="sidebar-container h-full bg-indigo-900 text-white flex flex-column shadow-4 transition-all transition-duration-300 overflow-hidden"
+    [style.width]="sidebarVisible() ? '280px' : '0px'"
+  >
+    <div
+      class="sidebar-header p-4 flex align-items-center justify-content-between white-space-nowrap"
+    >
+      <span class="text-2xl font-bold tracking-tight"
+        >Admin<span class="text-indigo-300">Panel</span></span
+      >
+    </div>
+
+    <div class="sidebar-content flex-grow-1 px-3 py-4">
+      <ul class="list-none p-0 m-0 flex flex-column gap-2">
+        @for (item of menuItems; track item.label) {
+          <li>
+            <a
+              [routerLink]="item.route"
+              routerLinkActive="active-link"
+              class="sidebar-link flex align-items-center p-3 border-round-md text-white-alpha-70 hover:bg-white-alpha-10 hover:text-white transition-all transition-duration-300 cursor-pointer no-underline p-ripple"
+              pRipple
+            >
+              <i [class]="item.icon + ' mr-3 text-xl'"></i>
+              <span class="text-lg font-medium">{{ item.label }}</span>
+            </a>
+          </li>
+        }
+      </ul>
+    </div>
+
+    <div class="sidebar-footer p-4 mt-auto border-top-1 border-white-alpha-10 white-space-nowrap">
+      <div class="flex align-items-center gap-3">
+        @if (currentUser()?.['image']) {
+          <img
+            [src]="currentUser()?.['image']"
+            class="w-2rem h-2rem border-circle object-cover shadow-2"
+            alt="Admin"
+          />
+        } @else {
+          <div
+            class="w-2rem h-2rem border-circle bg-white-alpha-20 flex align-items-center justify-content-center text-xs font-bold"
+          >
+            {{ userInitials() }}
+          </div>
+        }
+        <span class="font-medium">{{ currentUser()?.['name'] || 'Administrator' }}</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <div class="flex-grow-1 flex flex-column overflow-hidden transition-all transition-duration-300">
+    <!-- Header -->
+    <header
+      class="h-4rem bg-white border-bottom-1 border-gray-200 flex align-items-center px-4 shadow-sm z-5"
+    >
+      <p-button
+        [icon]="sidebarVisible() ? 'pi pi-chevron-left' : 'pi pi-chevron-right'"
+        [text]="true"
+        [rounded]="true"
+        severity="secondary"
+        (onClick)="sidebarVisible.set(!sidebarVisible())"
+      />
+
+      <div class="ml-auto flex align-items-center gap-3">
+        <div class="flex align-items-center gap-3">
+          <p-button
+            label="Logout"
+            icon="pi pi-sign-out"
+            [text]="true"
+            severity="danger"
+            (onClick)="logout()"
+          />
+        </div>
+      </div>
+    </header>
+
+    <!-- Page Content -->
+    <main class="flex-grow-1 overflow-auto">
+      <router-outlet />
+    </main>
+  </div>
+</div>

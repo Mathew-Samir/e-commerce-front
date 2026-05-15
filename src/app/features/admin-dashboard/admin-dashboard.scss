@@ -1,0 +1,58 @@
+.admin-layout {
+  font-family: var(--font-family, 'Inter', sans-serif);
+  
+  .sidebar-container {
+    background: linear-gradient(180deg, #1e1b4b 0%, #312e81 100%);
+    min-width: 0;
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .active-link {
+    background-color: rgba(255, 255, 255, 0.15) !important;
+    color: white !important;
+    font-weight: 700 !important;
+    box-shadow: inset 4px 0 0 0 #818cf8;
+  }
+
+  .sidebar-link {
+    letter-spacing: 0.025em;
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.08);
+      transform: translateX(4px);
+    }
+  }
+
+  main {
+    background-color: #f8fafc;
+  }
+
+  header {
+    backdrop-filter: blur(8px);
+    background-color: rgba(255, 255, 255, 0.9);
+  }
+
+  .p-datatable {
+    .p-datatable-header {
+      background: transparent;
+      border: none;
+    }
+    
+    .p-datatable-thead > tr > th {
+      font-weight: 600;
+      color: #475569;
+      padding: 1rem;
+    }
+
+    .p-datatable-tbody > tr {
+      transition: background-color 0.2s;
+      &:hover {
+        background-color: #f1f5f9;
+      }
+    }
+  }
+}
+
+.p-ripple {
+  overflow: hidden;
+  position: relative;
+}

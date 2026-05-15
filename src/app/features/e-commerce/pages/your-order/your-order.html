@@ -1,0 +1,156 @@
+@if (order(); as currentOrder) {
+  <div class="order-container">
+    <!-- Header -->
+    <div class="order-header">
+      <div class="header-titles">
+        <h1>
+          @if (currentOrder.status === 'Cancelled') {
+            Order Cancelled
+          } @else {
+            Order Successfully Placed!
+          }
+        </h1>
+        <p class="order-meta">
+          Order <strong>#{{ currentOrder._id }}</strong> • Placed on
+          {{ currentOrder.createdAt | date: 'mediumDate' }}
+        </p>
+      </div>
+      <div class="header-actions">
+        <p-tag
+          [value]="currentOrder.status"
+          [severity]="getSeverity(currentOrder.status)"
+          class="status-tag"
+        />
+        @if (currentOrder.status === 'pending') {
+          <p-button
+            label="Cancel Order"
+            icon="pi pi-times"
+            [outlined]="true"
+            severity="danger"
+            (onClick)="openConfirmDialog('cancel')"
+          />
+        }
+        @if (currentOrder.status.toLowerCase() === 'received' || currentOrder.status.toLowerCase() === 'shipped') {
+          <p-button label="Refund" icon="pi pi-refresh" [outlined]="true" (onClick)="openConfirmDialog('refund')" />
+        }
+      </div>
+    </div>
+
+    <div class="order-grid">
+      <!-- Left Column: Items -->
+      <div class="order-items-col">
+        <p-card styleClass="items-card">
+          <ng-template pTemplate="header">
+            <h3 class="card-title">Items Ordered</h3>
+          </ng-template>
+
+          <div class="items-list">
+            @for (item of currentOrder.products; track item._id; let last = $last) {
+              <div class="order-item">
+                <div class="item-details pl-0">
+                  <div class="item-info">
+                    <h4 class="item-name">{{ item.name }}</h4>
+                    <p class="item-category">Quantity: {{ item.quantity }}</p>
+                  </div>
+                  <div class="item-pricing">
+                    <span class="item-price">{{ item.price | currency }}</span>
+                    <span class="item-total">{{ item.price * item.quantity | currency }}</span>
+                  </div>
+                </div>
+              </div>
+              @if (!last) {
+                <p-divider />
+              }
+            }
+          </div>
+        </p-card>
+      </div>
+
+      <!-- Right Column: Summary & Info -->
+      <div class="order-summary-col">
+        <p-card styleClass="summary-card">
+          <ng-template pTemplate="header">
+            <h3 class="card-title">Order Summary</h3>
+          </ng-template>
+
+          <div class="summary-details">
+            <div class="summary-row total-row">
+              <span class="summary-label">Total</span>
+              <span class="summary-value">{{ currentOrder.totalPrice | currency }}</span>
+            </div>
+          </div>
+        </p-card>
+
+        <p-card styleClass="info-card mt-4">
+          <ng-template pTemplate="header">
+            <h3 class="card-title">Shipping Information</h3>
+          </ng-template>
+
+          <div class="info-section">
+            <h4 class="info-subtitle">Shipping Address</h4>
+            <p class="info-text">
+              {{ currentOrder.address }}
+            </p>
+          </div>
+
+          <p-divider />
+
+          <div class="info-section">
+            <h4 class="info-subtitle">Phone Number</h4>
+            <div class="payment-method">
+              <i class="pi pi-phone payment-icon"></i>
+              <span class="info-text">{{ currentOrder.phoneNumber }}</span>
+            </div>
+          </div>
+        </p-card>
+      </div>
+    </div>
+  </div>
+
+  <p-dialog
+    header="Confirm Action"
+    [modal]="true"
+    [visible]="isConfirmDialogVisible()"
+    (visibleChange)="isConfirmDialogVisible.set($event)"
+    [style]="{ width: '400px' }"
+    [draggable]="false"
+    [resizable]="false"
+  >
+    <div class="flex align-items-center gap-3 py-3">
+      <i class="pi pi-exclamation-triangle text-4xl text-yellow-500"></i>
+      <p class="m-0 text-lg">
+        Are you sure you want to <strong>{{ confirmActionType() }}</strong> this order?
+      </p>
+    </div>
+
+    @if (confirmActionType() === 'refund') {
+      <div class="flex flex-column gap-2 mt-3 w-full">
+        <label for="reason" class="font-semibold">Reason for Refund</label>
+        <textarea
+          pInputText
+          id="reason"
+          [ngModel]="refundReason()"
+          (ngModelChange)="refundReason.set($event)"
+          rows="4"
+          class="w-full p-inputtext p-component"
+          placeholder="Please describe why you are requesting a refund..."
+        ></textarea>
+      </div>
+    }
+
+    <div class="flex justify-content-end gap-2 mt-4">
+      <p-button label="No, Keep it" severity="secondary" [text]="true" (onClick)="isConfirmDialogVisible.set(false)" />
+      <p-button
+        label="Yes, proceed"
+        severity="danger"
+        (onClick)="confirmAction()"
+        [disabled]="confirmActionType() === 'refund' && refundReason().trim().length === 0"
+      />
+    </div>
+  </p-dialog>
+} @else {
+  <div class="loading-state">
+    <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
+    <p>Loading order details...</p>
+  </div>
+}

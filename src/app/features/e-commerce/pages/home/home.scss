@@ -1,0 +1,347 @@
+.hero {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.hero-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to right, rgba(0, 0, 0, 0.78), rgba(0, 0, 0, 0.25));
+}
+
+.hero-content {
+  position: absolute;
+  top: 50%;
+  left: 8%;
+  transform: translateY(-50%);
+  z-index: 2;
+  max-width: 650px;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+
+  h1 {
+    font-size: 5rem;
+    line-height: 1.1;
+    font-weight: 800;
+    margin: 0;
+  }
+
+  p {
+    font-size: 1.15rem;
+    line-height: 1.9;
+    color: rgba(255, 255, 255, 0.82);
+    margin: 0;
+  }
+}
+
+.subtitle {
+  display: inline-block;
+  align-self: flex-start;
+  padding: 0.6rem 1.2rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(10px);
+  font-size: 0.9rem;
+  letter-spacing: 3px;
+  font-weight: 600;
+}
+
+.buttons {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.primary-btn,
+.secondary-btn {
+  padding: 1rem 2rem;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 700;
+  transition: 0.3s ease;
+}
+
+.primary-btn {
+  background: white;
+  color: black;
+
+  &:hover {
+    transform: translateY(-5px);
+    background: #f3f3f3;
+  }
+}
+
+.secondary-btn {
+  background: transparent;
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(8px);
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.12);
+    transform: translateY(-5px);
+  }
+}
+
+@media (max-width: 768px) {
+  .hero {
+    height: 85vh;
+  }
+
+  .hero-content {
+    left: 5%;
+    right: 5%;
+    max-width: 100%;
+
+    h1 {
+      font-size: 2.8rem;
+    }
+
+    p {
+      font-size: 1rem;
+    }
+  }
+
+  .primary-btn,
+  .secondary-btn {
+    width: 100%;
+  }
+}
+
+.featured-products {
+  padding: 6rem 0;
+  background-color: var(--bg-secondary);
+
+  .container {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 4rem;
+  }
+}
+
+.section-header {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+
+  h2 {
+    font-size: 3rem;
+    font-weight: 900;
+    color: var(--text-main);
+    margin: 0;
+    letter-spacing: -0.025em;
+  }
+
+  p {
+    font-size: 1.25rem;
+    color: var(--text-muted);
+    max-width: 600px;
+    margin: 0;
+  }
+}
+
+.product-item {
+  padding: 1rem;
+
+  .product-card {
+    background: #ffffff;
+    border: 1px solid #edf2f7;
+    border-radius: 8px;
+    padding: 1rem;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s ease;
+
+    &:hover {
+      transform: translateY(-4px);
+    }
+
+    .product-image-container {
+      position: relative;
+      background: #f8fafc;
+      border-radius: 6px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+
+      .product-image {
+        width: 100%;
+        height: 200px;
+        object-fit: contain;
+        display: block;
+      }
+
+      .status-tag {
+        position: absolute;
+        top: 8px;
+        left: 8px;
+
+        ::ng-deep .p-tag {
+          font-size: 0.75rem;
+          font-weight: 700;
+          padding: 0.25rem 0.5rem;
+          border-radius: 4px;
+        }
+
+        &.p-tag-success ::ng-deep .p-tag {
+          background-color: #dcfce7;
+          color: #166534;
+        }
+
+        &.p-tag-danger ::ng-deep .p-tag {
+          background-color: #fee2e2;
+          color: #991b1b;
+        }
+
+        &.p-tag-warn ::ng-deep .p-tag {
+          background-color: #fef9c3;
+          color: #854d0e;
+        }
+      }
+    }
+
+    .product-info {
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+      gap: 1.25rem;
+
+      .product-name {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #4a5568;
+        margin: 0;
+      }
+
+      .product-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: auto;
+
+        .product-price {
+          font-size: 1.5rem;
+          font-weight: 700;
+          color: #2d3748;
+        }
+
+        .product-actions {
+          display: flex;
+          gap: 0.5rem;
+
+          .wishlist-btn ::ng-deep .p-button {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            color: #4a5568;
+            width: 40px;
+            height: 40px;
+            padding: 0;
+            border-radius: 6px;
+
+            &:hover {
+              background: #f8fafc;
+            }
+          }
+
+          .cart-btn ::ng-deep .p-button {
+            background: #000000;
+            border: none;
+            color: #ffffff;
+            width: 40px;
+            height: 40px;
+            padding: 0;
+            border-radius: 6px;
+
+            &:hover {
+              background: #1a1a1a;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+// Customizing PrimeNG Carousel
+:host ::ng-deep {
+  .p-carousel-content-container {
+    .p-carousel-indicator-list {
+      display: none !important;
+    }
+  }
+  .p-carousel-indicators {
+    padding: 2rem 0 0 0;
+    gap: 0.5rem;
+  }
+
+  .p-carousel-indicator {
+    button {
+      width: 32px;
+      height: 8px;
+      border-radius: 4px;
+      background-color: #e2e8f0;
+      border: none;
+      transition: all 0.3s ease;
+      padding: 0;
+    }
+
+    &.p-highlight button {
+      background-color: #000000;
+      width: 48px;
+    }
+  }
+
+  .p-carousel-prev,
+  .p-carousel-next {
+    width: 2.5rem;
+    height: 2.5rem;
+    background: transparent;
+    border: none;
+    color: #4a5568;
+    transition: all 0.2s ease;
+
+    &:hover {
+      color: #000000;
+      background: transparent;
+    }
+
+    .p-icon {
+      width: 1.25rem;
+      height: 1.25rem;
+    }
+  }
+}
+
+.testimonials {
+  padding: 6rem 0;
+  background-color: var(--bg-primary);
+
+  .container {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 4rem;
+  }
+}
