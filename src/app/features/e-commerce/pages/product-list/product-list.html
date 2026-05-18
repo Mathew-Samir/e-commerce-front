@@ -14,7 +14,7 @@
             pInputText
             placeholder="Search products..."
             [ngModel]="searchTerm()"
-            (ngModelChange)="searchTerm.set($event)"
+            (ngModelChange)="onSearchChange($event)"
           />
         </p-iconfield>
       </div>
@@ -24,7 +24,7 @@
           <p-select
             [options]="activeCollections()"
             [ngModel]="selectedCollection()"
-            (ngModelChange)="selectedCollection.set($event)"
+            (ngModelChange)="onCollectionChange($event)"
             optionLabel="title"
             optionValue="_id"
             placeholder="All Collections"
@@ -37,7 +37,7 @@
           <p-select
             [options]="sortOptions"
             [ngModel]="selectedSort()"
-            (ngModelChange)="selectedSort.set($event)"
+            (ngModelChange)="onSortChange($event)"
             placeholder="Sort by"
             [showClear]="true"
             styleClass="w-full md:w-15rem"
@@ -53,7 +53,7 @@
       </div>
     } @else {
       <div class="product-grid">
-        @for (product of filteredProducts(); track product._id) {
+        @for (product of paginatedProducts(); track product._id) {
           <div class="product-item">
             <div class="product-card">
               <div class="product-image-container">
@@ -117,13 +117,25 @@
             }
             <p-button
               label="Clear All Filters"
-              (click)="searchTerm.set(''); selectedSort.set(null); selectedCollection.set(null)"
+              (click)="clearFilters()"
               severity="secondary"
               [text]="true"
             />
           </div>
         }
       </div>
+
+      @if (filteredProducts().length > 0) {
+        <div class="pagination-container">
+          <p-paginator
+            [first]="first()"
+            [rows]="rows()"
+            [totalRecords]="filteredProducts().length"
+            [rowsPerPageOptions]="[6, 9, 12, 18, 24]"
+            (onPageChange)="onPageChange($event)"
+          />
+        </div>
+      }
     }
   </div>
 

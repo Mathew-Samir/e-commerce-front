@@ -51,10 +51,16 @@ export class MyRefunds implements OnInit {
 
   getOrderNumber(order: any): string {
     if (typeof order === 'object' && order !== null) {
-      return order.orderNumber || 'N/A';
+      const id = order._id;
+      if (id && typeof id === 'string') {
+        return `#${id.slice(-8).toUpperCase()}`;
+      }
+    } else if (typeof order === 'string') {
+      return `#${order.slice(-8).toUpperCase()}`;
     }
     return 'N/A';
   }
+
 
   getOrderId(order: any): string {
     if (typeof order === 'object' && order !== null) {

@@ -33,12 +33,15 @@ export class ProductService {
   isLoading = computed(() => this.loadingSignal());
   error = computed(() => this.errorSignal());
 
-  getProducts(filters?: { category?: string; subcategory?: string }) {
+  getProducts(filters?: { category?: string; subcategory?: string; limit?: number }) {
     this.loadingSignal.set(true);
     this.errorSignal.set(null);
     let params = new HttpParams();
     if (filters?.category) params = params.set('category', filters.category);
     if (filters?.subcategory) params = params.set('subcategory', filters.subcategory);
+
+    const limit = filters?.limit ?? 1000;
+    params = params.set('limit', limit.toString());
 
     return this.http.get<ApiResponse<Product[]>>(this.apiUrl, { params }).pipe(
       tap((res) => {

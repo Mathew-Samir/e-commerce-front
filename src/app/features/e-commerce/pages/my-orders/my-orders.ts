@@ -55,7 +55,7 @@ export class MyOrders implements OnInit {
       received: 'Received',
       rejected: 'Rejected',
       cancelledByUser: 'Cancelled',
-      cancelledByAdmin: 'Cancelled by Admin',
+      cancelledByAdmin: 'Cancelled',
       refunded: 'Refunded'
     };
     return labels[status] || status;

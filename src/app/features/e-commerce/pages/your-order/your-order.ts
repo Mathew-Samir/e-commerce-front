@@ -92,6 +92,20 @@ export class YourOrder implements OnInit {
     }
   }
 
+  getStatusLabel(status: string): string {
+    const labels: Record<string, string> = {
+      pending: 'Pending',
+      preparing: 'Preparing',
+      shipped: 'Shipped',
+      received: 'Received',
+      rejected: 'Rejected',
+      cancelledByUser: 'Cancelled',
+      cancelledByAdmin: 'Cancelled',
+      refunded: 'Refunded'
+    };
+    return labels[status] || status;
+  }
+
   openConfirmDialog(action: 'cancel' | 'refund') {
     this.confirmActionType.set(action);
     this.refundReason.set(''); // Reset reason

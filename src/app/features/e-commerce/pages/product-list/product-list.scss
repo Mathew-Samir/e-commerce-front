@@ -446,3 +446,100 @@
     grid-template-columns: 1fr;
   }
 }
+
+.pagination-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 3.5rem;
+  padding-bottom: 2rem;
+
+  ::ng-deep {
+    .p-paginator {
+      background: rgba(255, 255, 255, 0.7) !important;
+      backdrop-filter: blur(10px) !important;
+      border: 1px solid rgba(0, 0, 0, 0.06) !important;
+      border-radius: 16px !important;
+      padding: 0.85rem 1.75rem !important;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04) !important;
+      gap: 0.4rem !important;
+      transition: all 0.3s ease !important;
+
+      &:hover {
+        box-shadow: 0 6px 24px rgba(0, 0, 0, 0.06) !important;
+        border-color: rgba(0, 0, 0, 0.1) !important;
+      }
+
+      .p-paginator-page,
+      .p-paginator-first,
+      .p-paginator-prev,
+      .p-paginator-next,
+      .p-paginator-last {
+        min-width: 2.75rem !important;
+        height: 2.75rem !important;
+        border-radius: 10px !important;
+        color: #64748b !important;
+        font-weight: 600 !important;
+        font-size: 0.95rem !important;
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        border: 1px solid transparent !important;
+        background: transparent !important;
+
+        &:not(.p-disabled):not(.p-highlight):hover {
+          background: #f1f5f9 !important;
+          color: #0f172a !important;
+          border-color: #e2e8f0 !important;
+          transform: translateY(-2px) !important;
+        }
+
+        &.p-disabled {
+          opacity: 0.35 !important;
+          cursor: not-allowed !important;
+        }
+
+        &.p-highlight {
+          background: #0f172a !important;
+          color: #ffffff !important;
+          box-shadow: 0 4px 12px rgba(15, 23, 42, 0.25) !important;
+          border-color: #0f172a !important;
+
+          &:hover {
+            background: #1e293b !important;
+            color: #ffffff !important;
+          }
+        }
+      }
+
+      .p-paginator-current {
+        color: #64748b !important;
+        font-weight: 500 !important;
+        margin-right: 1.25rem !important;
+        font-size: 0.9rem !important;
+      }
+
+      .p-select {
+        height: 2.75rem !important;
+        border-radius: 10px !important;
+        border-color: #e2e8f0 !important;
+        background: #ffffff !important;
+        box-shadow: none !important;
+        transition: all 0.2s ease !important;
+
+        &:hover {
+          border-color: #cbd5e1 !important;
+        }
+
+        &.p-focus {
+          border-color: #0f172a !important;
+          box-shadow: 0 0 0 2px rgba(15, 23, 42, 0.1) !important;
+        }
+
+        .p-select-label {
+          padding: 0.5rem 0.75rem !important;
+          font-size: 0.9rem !important;
+          font-weight: 600 !important;
+          color: #334155 !important;
+        }
+      }
+    }
+  }
+}

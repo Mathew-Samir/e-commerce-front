@@ -525,3 +525,18 @@ body {
     font-weight: 600;
   }
 }
+
+// ── Responsive Table Stack Layout Overrides ──
+.p-column-title {
+  display: none !important;
+}
+
+@media screen and (max-width: 960px) {
+  .p-column-title {
+    display: inline-block !important;
+    font-weight: 700;
+    color: var(--text-muted, #64748b);
+    margin-right: 0.5rem;
+  }
+}
+
