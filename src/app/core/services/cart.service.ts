@@ -33,7 +33,7 @@ export class CartService {
   constructor() {
     // Fetch cart on initialization
     this.fetchCart();
-    
+
     // Automatically sync cart when authentication status changes
     effect(() => {
       if (this.authService.isAuthenticated()) {
@@ -46,6 +46,11 @@ export class CartService {
   }
 
   fetchCart() {
+    if (!this.authService.isAuthenticated()) {
+      this.loadGuestCart();
+      return;
+    }
+
     this.loadingSignal.set(true);
     return this.http.get<ApiResponse<any>>(this.apiUrl).pipe(
       tap((res) => {
@@ -62,6 +67,20 @@ export class CartService {
   }
 
   addToCart(product: Product, quantity: number = 1) {
+    // Check if adding this would exceed stock
+    const cart = this.cartSignal();
+    const existingItem = cart.items.find(item => item.productId === product._id);
+    const currentQty = existingItem ? existingItem.quantity : 0;
+
+    if (product.stock < currentQty + quantity) {
+      this.errorSignal.set(`Cannot add more. Only ${product.stock} items in stock.`);
+      return;
+    }
+
+    if (!this.authService.isAuthenticated()) {
+      this.addToGuestCart(product, quantity);
+      return;
+    }
 
     this.loadingSignal.set(true);
     return this.http.post<ApiResponse<any>>(this.apiUrl, { productId: product._id, quantity }).pipe(
@@ -79,6 +98,10 @@ export class CartService {
   }
 
   updateQuantity(itemId: string, quantity: number) {
+    if (!this.authService.isAuthenticated()) {
+      this.updateGuestQuantity(itemId, quantity);
+      return;
+    }
 
     this.loadingSignal.set(true);
     return this.http.put<ApiResponse<any>>(`${this.apiUrl}/${itemId}`, { quantity }).pipe(
@@ -96,6 +119,11 @@ export class CartService {
   }
 
   removeItem(itemId: string) {
+    if (!this.authService.isAuthenticated()) {
+      this.removeFromGuestCart(itemId);
+      return;
+    }
+
     this.loadingSignal.set(true);
     return this.http.delete<ApiResponse<any>>(`${this.apiUrl}/${itemId}`).pipe(
       tap((res) => {
@@ -111,9 +139,27 @@ export class CartService {
     ).subscribe();
   }
 
+
   clearCart() {
-    this.cartSignal.set({ items: [], totalQuantity: 0, totalPrice: 0 });
-    this.clearGuestCart();
+    if (!this.authService.isAuthenticated()) {
+      this.cartSignal.set({ items: [], totalQuantity: 0, totalPrice: 0 });
+      this.clearGuestCart();
+      return;
+    }
+
+    this.loadingSignal.set(true);
+    this.http.delete<ApiResponse<any>>(this.apiUrl).pipe(
+      tap((res) => {
+        if (res.success) {
+          this.cartSignal.set({ items: [], totalQuantity: 0, totalPrice: 0 });
+        }
+      }),
+      catchError((err) => {
+        this.errorSignal.set(err.error?.message || 'Failed to clear cart');
+        return of(null);
+      }),
+      finalize(() => this.loadingSignal.set(false))
+    ).subscribe();
   }
 
   syncCart() {
@@ -164,6 +210,12 @@ export class CartService {
   private addToGuestCart(product: Product, quantity: number) {
     const cart = this.getGuestCart();
     const existingItem = cart.items.find(i => i.productId === product._id);
+    const currentQty = existingItem ? existingItem.quantity : 0;
+
+    if (product.stock < currentQty + quantity) {
+       this.errorSignal.set(`Only ${product.stock} items available`);
+       return;
+    }
 
     if (existingItem) {
       existingItem.quantity += quantity;
@@ -212,10 +264,10 @@ export class CartService {
     if (!data) {
       return { items: [], totalQuantity: 0, totalPrice: 0 };
     }
-    
+
     // Handle both array response and object response formats
     const itemsArray = Array.isArray(data) ? data : (data.items || []);
-    
+
     const items: CartItem[] = itemsArray.map((item: any) => ({
       id: item._id || item.id,
       productId: item.productId?._id || item.productId,

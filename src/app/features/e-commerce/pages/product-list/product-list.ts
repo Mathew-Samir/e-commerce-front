@@ -9,9 +9,12 @@ import { SelectModule } from 'primeng/select';
 
 import { IconField } from 'primeng/iconfield';
 import { InputIcon } from 'primeng/inputicon';
+import { TooltipModule } from 'primeng/tooltip';
 import { ProductService } from '../../../../core/services/product.service';
+import { CollectionService } from '../../../../core/services/collection.service';
 import { CartService } from '../../../../core/services/cart.service';
 import { Product } from '../../../../core/interface/product.interface';
+import { Collection } from '../../../../core/interface/collection.interface';
 
 @Component({
   selector: 'app-product-list',
@@ -26,6 +29,7 @@ import { Product } from '../../../../core/interface/product.interface';
 
     IconField,
     InputIcon,
+    TooltipModule
   ],
   templateUrl: './product-list.html',
   styleUrl: './product-list.scss',
@@ -33,15 +37,18 @@ import { Product } from '../../../../core/interface/product.interface';
 })
 export class ProductList implements OnInit {
   private productService = inject(ProductService);
+  private collectionService = inject(CollectionService);
   private cartService = inject(CartService);
 
   // Access signals from service
   products = this.productService.products;
+  activeCollections = this.collectionService.activeCollections;
   isLoading = this.productService.isLoading;
   error = this.productService.error;
 
   searchTerm = signal('');
   selectedSort = signal<string | null>(null);
+  selectedCollection = signal<string | null>(null);
 
 
   sortOptions = [
@@ -54,7 +61,9 @@ export class ProductList implements OnInit {
   filteredProducts = computed(() => {
     let filtered = this.products().filter((product) => {
       const matchesSearch = product.name.toLowerCase().includes(this.searchTerm().toLowerCase());
-      return matchesSearch;
+      const matchesCollection = !this.selectedCollection()
+        || product.collectionId?._id === this.selectedCollection();
+      return matchesSearch && matchesCollection;
     });
 
     if (this.selectedSort()) {
@@ -82,6 +91,7 @@ export class ProductList implements OnInit {
 
   ngOnInit() {
     this.productService.getProducts().subscribe();
+    this.collectionService.getActiveCollections().subscribe();
   }
 
   showProductDetails(product: Product) {

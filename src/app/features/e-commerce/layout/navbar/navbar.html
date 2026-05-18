@@ -1,7 +1,7 @@
-<p-menubar [model]="items()">
+<p-menubar [model]="items()" styleClass="premium-navbar">
 
   <ng-template pTemplate="start">
-    <h3 class="logo">MyApp</h3>
+    <h3 class="logo" routerLink="/home">MyShop</h3>
   </ng-template>
 
   <ng-template pTemplate="end">
@@ -17,29 +17,38 @@
       />
 
       @if (isAuthenticated()) {
-        <span class="user-name">Welcome, {{ currentUser()?.['name'] }}</span>
-        <p-button
-          label="Logout"
-          icon="pi pi-sign-out"
-          severity="danger"
-          [outlined]="true"
-          (click)="logout()"
-        />
+        <div class="user-profile" (click)="menu.toggle($event)" role="button" tabindex="0" (keydown.enter)="menu.toggle($event)">
+          <span class="user-name font-medium">Hello, {{ currentUser()?.['name'] || 'User' }}</span>
+          <p-button
+            icon="pi pi-user"
+            severity="secondary"
+            [rounded]="true"
+            [text]="true"
+            aria-label="User Profile"
+            class="profile-btn"
+            tabindex="-1"
+          />
+        </div>
+        <p-menu #menu [model]="profileItems()" [popup]="true" appendTo="body" styleClass="premium-menu"></p-menu>
       } @else {
-        <p-button
-          label="Login"
-          icon="pi pi-user"
-          severity="secondary"
-          outlined="true"
-          routerLink="/login"
-        />
+        <div class="auth-buttons">
+          <p-button
+            label="Log In"
+            icon="pi pi-sign-in"
+            severity="secondary"
+            [outlined]="true"
+            class="login-btn"
+            routerLink="/login"
+          />
 
-        <p-button
-          label="Sign Up"
-          icon="pi pi-user-plus"
-          severity="contrast"
-          routerLink="/signup"
-        />
+          <p-button
+            label="Get Started"
+            icon="pi pi-bolt"
+            severity="contrast"
+            class="signup-btn"
+            routerLink="/signup"
+          />
+        </div>
       }
     </div>
   </ng-template>

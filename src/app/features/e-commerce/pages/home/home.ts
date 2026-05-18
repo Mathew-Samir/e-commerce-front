@@ -10,6 +10,7 @@ import { TestimonialService } from '../../../../core/services/testimonial.servic
 import { CartService } from '../../../../core/services/cart.service';
 import { Product } from '../../../../core/interface/product.interface';
 import { ProductService } from '../../../../core/services/product.service';
+import { CollectionService } from '../../../../core/services/collection.service';
 
 @Component({
   selector: 'app-home',
@@ -22,12 +23,16 @@ export class Home {
   private readonly testimonialService = inject(TestimonialService);
   private readonly productService = inject(ProductService);
   private readonly cartService = inject(CartService);
+  private readonly collectionService = inject(CollectionService);
 
-  products = this.productService.products;
+  bestSellers = this.productService.bestSellers;
+  seasonalProducts = this.collectionService.seasonalProducts;
+  activeCollections = this.collectionService.activeCollections;
   testimonials = toSignal(this.testimonialService.getApprovedTestimonials(), { initialValue: [] });
 
   constructor() {
-    this.productService.getProducts().subscribe();
+    this.productService.getBestSellers().subscribe();
+    this.collectionService.getSeasonalProducts(10).subscribe();
   }
 
 
@@ -49,17 +54,16 @@ export class Home {
     },
   ];
 
-  getSeverity(status: string): 'success' | 'secondary' | 'info' | 'warn' | 'danger' | 'contrast' | undefined {
-    switch (status) {
-      case 'INSTOCK':
-        return 'success';
-      case 'LOWSTOCK':
-        return 'warn';
-      case 'OUTOFSTOCK':
-        return 'danger';
-      default:
-        return 'info';
-    }
+  getSeverity(stock: number): 'success' | 'secondary' | 'info' | 'warn' | 'danger' | 'contrast' | undefined {
+    if (stock > 10) return 'success';
+    if (stock > 0) return 'warn';
+    return 'danger';
+  }
+
+  getStockStatus(stock: number): string {
+    if (stock > 10) return 'INSTOCK';
+    if (stock > 0) return 'LOWSTOCK';
+    return 'OUTOFSTOCK';
   }
 
   addToCart(product: Product) {

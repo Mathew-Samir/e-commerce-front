@@ -1,83 +1,135 @@
-<div class="refunds-container p-4">
-  <div class="mb-4">
-    <h2 class="m-0 text-3xl font-bold text-900">Refunds Management</h2>
-    <p class="text-600">Handle customer refund requests and disputes</p>
+<div class="admin-page">
+  <!-- Header -->
+  <div class="admin-page-header">
+    <div class="admin-header-content">
+      <div class="admin-header-icon purple">
+        <i class="pi pi-receipt"></i>
+      </div>
+      <div>
+        <h1 class="admin-page-title">Refunds Management</h1>
+        <p class="admin-page-subtitle">Handle customer refund requests and disputes</p>
+      </div>
+    </div>
+    <div class="admin-stat-chips">
+      <div class="admin-stat-chip pending">
+        <i class="pi pi-clock"></i>
+        <span>{{ pendingCount() }} Pending</span>
+      </div>
+      <div class="admin-stat-chip success">
+        <i class="pi pi-check-circle"></i>
+        <span>{{ approvedCount() }} Approved</span>
+      </div>
+      <div class="admin-stat-chip danger">
+        <i class="pi pi-times-circle"></i>
+        <span>{{ rejectedCount() }} Rejected</span>
+      </div>
+    </div>
   </div>
 
-  <div class="card shadow-2 border-round-xl overflow-hidden bg-white">
+  <!-- Table Card -->
+  <div class="admin-table-card">
     <p-table
       [value]="loading() ? skeletonRows : refunds()"
       [paginator]="!loading()"
       [rows]="10"
       [responsiveLayout]="'scroll'"
-      styleClass="p-datatable-striped"
+      [rowHover]="true"
+      styleClass="admin-table"
     >
       <ng-template pTemplate="header">
         <tr>
-          <th class="bg-gray-50">Order #</th>
-          <th class="bg-gray-50">User</th>
-          <th class="bg-gray-50">Amount</th>
-          <th class="bg-gray-50">Reason</th>
-          <th class="bg-gray-50">Status</th>
-          <th class="bg-gray-50 text-center" style="width: 200px">Actions</th>
+          <th>Order</th>
+          <th>Customer</th>
+          <th>Amount</th>
+          <th>Reason</th>
+          <th>Date</th>
+          <th>Status</th>
+          <th class="text-center" style="width: 180px">Actions</th>
         </tr>
       </ng-template>
 
       <ng-template pTemplate="body" let-refund>
         @if (loading()) {
           <tr>
-            <td><p-skeleton width="6rem" height="1.25rem"></p-skeleton></td>
-            <td><p-skeleton width="8rem" height="1.25rem"></p-skeleton></td>
             <td><p-skeleton width="5rem" height="1.25rem"></p-skeleton></td>
-            <td><p-skeleton width="12rem" height="1.25rem"></p-skeleton></td>
-            <td><p-skeleton width="5rem" height="1.5rem" borderRadius="1rem"></p-skeleton></td>
+            <td><p-skeleton width="7rem" height="1.25rem"></p-skeleton></td>
+            <td><p-skeleton width="4rem" height="1.25rem"></p-skeleton></td>
+            <td><p-skeleton width="10rem" height="1.25rem"></p-skeleton></td>
+            <td><p-skeleton width="5rem" height="1.25rem"></p-skeleton></td>
+            <td><p-skeleton width="4rem" height="1.5rem" borderRadius="1rem"></p-skeleton></td>
             <td>
-              <div class="flex justify-content-center gap-2">
-                <p-skeleton width="100%" height="2.5rem"></p-skeleton>
+              <div class="flex justify-content-center">
+                <p-skeleton width="6rem" height="2rem"></p-skeleton>
               </div>
             </td>
           </tr>
         } @else {
           <tr>
-            <td class="font-bold text-primary">{{ getOrderNumber(refund) }}</td>
-            <td>{{ getUserName(refund) }}</td>
-            <td class="font-semibold text-900">{{ refund.refundedAmount | currency }}</td>
+            <td>
+              <div class="admin-id-cell">
+                <i class="pi pi-hashtag"></i>
+                <span class="admin-id-text" [pTooltip]="getOrderNumber(refund)" tooltipPosition="top">
+                  {{ getShortOrderId(refund) }}
+                </span>
+              </div>
+            </td>
+            <td>
+              <div class="admin-user-cell">
+                <div class="admin-avatar">{{ getUserInitials(refund) }}</div>
+                <div class="admin-user-info">
+                  <span class="admin-user-name">{{ getUserName(refund) }}</span>
+                  <span class="admin-user-secondary">{{ getUserEmail(refund) }}</span>
+                </div>
+              </div>
+            </td>
+            <td>
+              <span class="admin-amount">{{ refund.refundedAmount | currency }}</span>
+            </td>
             <td>
               <div
-                class="text-700 max-w-15rem overflow-hidden text-overflow-ellipsis white-space-nowrap"
+                class="admin-truncate"
                 [pTooltip]="refund.reason"
+                tooltipPosition="top"
               >
                 {{ refund.reason }}
               </div>
             </td>
             <td>
+              <span class="admin-date">{{ refund.createdAt | date: 'mediumDate' }}</span>
+            </td>
+            <td>
               <p-tag
-                [value]="refund.status"
+                [value]="refund.status | titlecase"
                 [severity]="getStatusSeverity(refund.status)"
                 [rounded]="true"
               />
             </td>
             <td>
-              <div class="flex gap-2 justify-content-center">
+              <div class="admin-actions-cell">
                 @if (refund.status === 'pending') {
                   <p-button
-                    label="Approve"
                     icon="pi pi-check"
                     [rounded]="true"
                     [text]="true"
                     severity="success"
+                    pTooltip="Approve"
+                    tooltipPosition="top"
                     (onClick)="approveRefund(refund)"
                   />
                   <p-button
-                    label="Refuse"
                     icon="pi pi-times"
                     [rounded]="true"
                     [text]="true"
                     severity="danger"
+                    pTooltip="Refuse"
+                    tooltipPosition="top"
                     (onClick)="refuseRefund(refund)"
                   />
                 } @else {
-                  <span class="text-xs text-500 font-italic">Processed</span>
+                  <div class="admin-processed-badge">
+                    <i class="pi pi-check-circle"></i>
+                    <span>Processed</span>
+                  </div>
                 }
               </div>
             </td>
@@ -87,10 +139,13 @@
 
       <ng-template pTemplate="emptymessage">
         <tr>
-          <td colspan="6" class="text-center p-5">
-            <div class="flex flex-column align-items-center gap-3">
-              <i class="pi pi-receipt text-4xl text-400"></i>
-              <span class="text-600 font-medium">No refund requests found.</span>
+          <td colspan="7">
+            <div class="admin-empty-state">
+              <div class="admin-empty-icon">
+                <i class="pi pi-receipt"></i>
+              </div>
+              <h3>No refund requests</h3>
+              <p>There are no refund requests to display at the moment.</p>
             </div>
           </td>
         </tr>

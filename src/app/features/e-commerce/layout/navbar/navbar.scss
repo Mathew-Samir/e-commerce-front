@@ -1,58 +1,394 @@
-::ng-deep .p-menubar {
+::ng-deep .premium-navbar {
   border: none !important;
-  border-bottom: 1px solid #e5e7eb !important;
+  background: rgba(255, 255, 255, 0.75) !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.4) !important;
   border-radius: 0 !important;
-
-  padding: 0 2rem;
-  height: 72px;
-
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.03) !important;
+  padding: 0.75rem 4rem !important;
+  height: 80px;
   display: flex;
   align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  transition: all 0.3s ease;
 
   .p-menubar-root-list {
     flex: 1;
-    display: flex;
-    justify-content: center;
-    gap: 1rem;
+    gap: 1.5rem;
+
+    @media (min-width: 992px) {
+      display: flex;
+      justify-content: center;
+    }
+
+    @media (max-width: 991px) {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      border-top: 1px solid var(--border-color);
+      padding: 1rem;
+      border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+      z-index: 1000;
+    }
+
+    .p-menuitem {
+      .p-menuitem-link {
+        padding: 0.75rem 1.25rem;
+        border-radius: var(--radius-full);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        background: transparent !important;
+
+        .p-menuitem-text {
+          font-weight: 500;
+          color: var(--text-main) !important;
+          font-size: 0.95rem;
+          transition: color 0.2s ease;
+          letter-spacing: 0.01em;
+        }
+
+        .p-menuitem-icon {
+          color: var(--text-muted) !important;
+          margin-right: 0.5rem;
+          font-size: 1rem;
+          transition: all 0.3s ease;
+        }
+
+        &:hover, &:focus {
+          background: rgba(59, 130, 246, 0.06) !important;
+          transform: translateY(-2px);
+
+          .p-menuitem-text {
+            color: var(--accent-color) !important;
+          }
+          .p-menuitem-icon {
+            color: var(--accent-color) !important;
+            transform: scale(1.1);
+          }
+        }
+      }
+
+      &.p-highlight .p-menuitem-link {
+        background: rgba(59, 130, 246, 0.1) !important;
+        .p-menuitem-text, .p-menuitem-icon {
+          color: var(--accent-color) !important;
+          font-weight: 600;
+        }
+      }
+    }
   }
+
+  .p-menubar-button {
+    margin-left: auto;
+    border-radius: var(--radius-md);
+    &:hover {
+      background: var(--bg-muted) !important;
+    }
+  }
+}
+
+.logo {
+  font-size: 1.75rem;
+  font-weight: 900;
+  letter-spacing: -0.04em;
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin: 0;
+  cursor: pointer;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+
+  &:hover {
+    opacity: 0.9;
+    transform: scale(1.02);
+  }
+}
 
 .nav-actions {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 1.25rem;
 
   .cart-btn {
     ::ng-deep .p-button {
       position: relative;
       width: 44px;
       height: 44px;
-      border-radius: 50%;
+      border-radius: var(--radius-full);
+      background: white;
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: var(--shadow-sm);
 
-      .p-badge {
-        position: absolute;
-        top: 2px;
-        right: 2px;
-        min-width: 18px;
-        height: 18px;
-        font-size: 0.7rem;
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-        justify-content: center;
-        border: 2px solid white;
+      .p-button-icon {
+        font-size: 1.15rem;
       }
 
       &:hover {
-        background: rgba(0, 0, 0, 0.05);
+        background: var(--bg-muted);
+        transform: translateY(-2px);
+        color: var(--accent-color);
+        border-color: rgba(59, 130, 246, 0.2);
+        box-shadow: var(--shadow-md);
+      }
+
+      .p-badge {
+        position: absolute;
+        top: 0px;
+        right: 5px;
+        min-width: 20px;
+        height: 20px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--accent-color);
+        color: white;
+        border: 2px solid white;
+        border-radius: var(--radius-full);
+        box-shadow: var(--shadow-sm);
+        padding: 0 4px;
+      }
+    }
+  }
+
+  .user-profile {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.35rem 0.35rem 0.35rem 1rem;
+    border-radius: var(--radius-full);
+    border: 1px solid var(--border-color);
+    background: white;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    box-shadow: var(--shadow-sm);
+
+    .user-name {
+      font-size: 0.9rem;
+      color: var(--text-main);
+      font-weight: 500;
+    }
+
+    .profile-btn {
+      ::ng-deep .p-button {
+        width: 34px;
+        height: 34px;
+        background: var(--bg-muted);
+        border: none;
+        color: var(--primary-color);
+        transition: all 0.3s ease;
+
+        .p-button-icon {
+          font-size: 1rem;
+        }
+      }
+    }
+
+    &:hover {
+      background: var(--bg-muted);
+      border-color: rgba(59, 130, 246, 0.2);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+
+      .profile-btn {
+        ::ng-deep .p-button {
+          background: rgba(59, 130, 246, 0.1);
+          color: var(--accent-color);
+        }
+      }
+    }
+  }
+
+  .auth-buttons {
+    display: flex;
+    gap: 0.75rem;
+
+    .login-btn {
+      ::ng-deep .p-button {
+        border-radius: var(--radius-full);
+        font-weight: 600;
+        padding: 0.5rem 1.5rem;
+        color: var(--text-main);
+        border-color: var(--border-color);
+        background: white;
+        box-shadow: var(--shadow-sm);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+        &:hover {
+          background: var(--bg-muted);
+          color: var(--accent-color);
+          border-color: rgba(59, 130, 246, 0.3);
+          transform: translateY(-2px);
+          box-shadow: var(--shadow-md);
+        }
+      }
+    }
+
+    .signup-btn {
+      ::ng-deep .p-button {
+        border-radius: var(--radius-full);
+        font-weight: 600;
+        padding: 0.5rem 1.5rem;
+        background: linear-gradient(135deg, var(--primary-color) 0%, #1e293b 100%);
+        border: none;
+        color: white;
+        box-shadow: 0 4px 12px rgba(15, 23, 42, 0.2);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+        &:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 6px 16px rgba(15, 23, 42, 0.3);
+          background: linear-gradient(135deg, #1e293b 0%, var(--primary-color) 100%);
+        }
       }
     }
   }
 }
 
-.logo {
-  font-size: 1.6rem;
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  color: var(--primary-color);
-  margin: 0;
-}}
+::ng-deep .premium-menu.p-menu {
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-xl);
+  padding: 0.75rem;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  min-width: 220px;
+
+  .p-menuitem {
+    margin-bottom: 0.25rem;
+
+    .p-menuitem-link {
+      border-radius: var(--radius-md);
+      padding: 0.75rem 1rem;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
+      .p-menuitem-text {
+        color: var(--text-main);
+        font-weight: 500;
+        font-size: 0.95rem;
+        transition: color 0.2s ease;
+      }
+
+      .p-menuitem-icon {
+        color: var(--text-muted);
+        transition: all 0.2s ease;
+        font-size: 1.1rem;
+      }
+
+      &:hover {
+        background: rgba(59, 130, 246, 0.08);
+        transform: translateX(4px);
+
+        .p-menuitem-text, .p-menuitem-icon {
+          color: var(--accent-color);
+        }
+      }
+    }
+  }
+
+  .p-menu-separator {
+    border-top: 1px solid var(--border-color);
+    margin: 0.5rem 0;
+  }
+}
+
+// Ensure responsiveness
+@media (max-width: 991px) {
+  ::ng-deep .premium-navbar {
+    padding: 0.75rem 1.5rem !important;
+
+    .p-menubar-button {
+      display: flex;
+      order: 3;
+      margin-left: 0.5rem;
+    }
+
+    .p-menubar-end {
+      margin-left: auto;
+      order: 2;
+    }
+  }
+
+  .nav-actions {
+    gap: 0.75rem;
+
+    .user-profile {
+      padding: 0.35rem;
+      .user-name {
+        display: none;
+      }
+    }
+
+    .auth-buttons {
+      .login-btn, .signup-btn {
+        ::ng-deep .p-button {
+          padding: 0.4rem 1rem;
+          font-size: 0.9rem;
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 576px) {
+  ::ng-deep .premium-navbar {
+    padding: 0.5rem 1rem !important;
+    height: 70px;
+  }
+
+  .logo {
+    font-size: 1.4rem;
+  }
+
+  .nav-actions {
+    gap: 0.5rem;
+
+    .cart-btn {
+      ::ng-deep .p-button {
+        width: 38px;
+        height: 38px;
+        .p-button-icon {
+          font-size: 1rem;
+        }
+      }
+    }
+
+    .auth-buttons {
+      gap: 0.5rem;
+      
+      .login-btn {
+        ::ng-deep .p-button {
+          padding: 0.4rem 0.8rem;
+          .p-button-label {
+            display: none;
+          }
+          .p-button-icon {
+            margin-right: 0;
+          }
+        }
+      }
+      
+      .signup-btn {
+        ::ng-deep .p-button {
+          padding: 0.4rem 0.8rem;
+          .p-button-label {
+            display: none;
+          }
+          .p-button-icon {
+            margin-right: 0;
+          }
+        }
+      }
+    }
+  }
+}

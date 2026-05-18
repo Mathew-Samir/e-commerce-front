@@ -14,6 +14,7 @@ export class ProductService {
 
   // State
   private productsSignal = signal<Product[]>([]);
+  private bestSellersSignal = signal<Product[]>([]);
   private selectedProductSignal = signal<Product | null>(null);
   private relatedProductsSignal = signal<Product[]>([]);
 
@@ -24,6 +25,7 @@ export class ProductService {
 
   // Selectors
   products = computed(() => this.productsSignal());
+  bestSellers = computed(() => this.bestSellersSignal());
   selectedProduct = computed(() => this.selectedProductSignal());
   relatedProducts = computed(() => this.relatedProductsSignal());
   categories = computed(() => this.categoriesSignal());
@@ -46,6 +48,25 @@ export class ProductService {
       }),
       catchError((err) => {
         this.errorSignal.set(err.error?.message || 'Failed to fetch products');
+        return of(null);
+      }),
+      finalize(() => this.loadingSignal.set(false)),
+    );
+  }
+
+  getBestSellers(limit: number = 10) {
+    this.loadingSignal.set(true);
+    this.errorSignal.set(null);
+    const params = new HttpParams().set('limit', limit);
+
+    return this.http.get<ApiResponse<Product[]>>(`${this.apiUrl}/best-sellers`, { params }).pipe(
+      tap((res) => {
+        if (res.success) {
+          this.bestSellersSignal.set(res.data);
+        }
+      }),
+      catchError((err) => {
+        this.errorSignal.set(err.error?.message || 'Failed to fetch best sellers');
         return of(null);
       }),
       finalize(() => this.loadingSignal.set(false)),

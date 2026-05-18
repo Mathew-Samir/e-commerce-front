@@ -57,6 +57,12 @@ export class Cart implements OnInit {
     const item = this.cartItems().find((i) => i.id === itemId);
     if (item) {
       const newQuantity = item.quantity + delta;
+      
+      // Stock check
+      if (delta > 0 && newQuantity > item.product.stock) {
+        return;
+      }
+      
       if (newQuantity > 0) {
         this.cartService.updateQuantity(itemId, newQuantity);
       } else {

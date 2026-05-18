@@ -17,12 +17,12 @@ import { MessageService } from 'primeng/api';
 @Component({
   selector: 'app-your-order',
   imports: [
-    CommonModule, 
-    CurrencyPipe, 
-    DatePipe, 
-    CardModule, 
-    ButtonModule, 
-    DividerModule, 
+    CommonModule,
+    CurrencyPipe,
+    DatePipe,
+    CardModule,
+    ButtonModule,
+    DividerModule,
     TagModule,
     RouterModule,
     DialogModule,
@@ -46,7 +46,7 @@ export class YourOrder implements OnInit {
 
   ngOnInit() {
     const orderId = this.route.snapshot.params['id'];
-    
+
     if (orderId) {
       this.fetchOrderById(orderId);
     } else {
@@ -78,10 +78,14 @@ export class YourOrder implements OnInit {
         return 'success';
       case 'pending':
       case 'processing':
+      case 'preparing':
         return 'info';
       case 'shipped':
         return 'warn';
-      case 'cancelled':
+      case 'cancelledbyuser':
+      case 'cancelledbyadmin':
+      case 'rejected':
+      case 'refunded':
         return 'danger';
       default:
         return 'info';
@@ -104,10 +108,10 @@ export class YourOrder implements OnInit {
         if (res.success) {
           this.order.set(res.data);
           this.isConfirmDialogVisible.set(false);
-          this.messageService.add({ 
-            severity: 'success', 
-            summary: 'Order Cancelled', 
-            detail: 'Your order has been successfully cancelled.' 
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Order Cancelled',
+            detail: 'Your order has been successfully cancelled.'
           });
         }
       });
@@ -115,7 +119,7 @@ export class YourOrder implements OnInit {
       if (!this.refundReason().trim()) {
         return;
       }
-      
+
       const payload = {
         orderId: currentOrder._id,
         reason: this.refundReason(),
@@ -132,18 +136,18 @@ export class YourOrder implements OnInit {
           if (res.success) {
             this.isConfirmDialogVisible.set(false);
             this.fetchOrderById(currentOrder._id);
-            this.messageService.add({ 
-              severity: 'success', 
-              summary: 'Refund Requested', 
-              detail: 'Your refund request has been submitted successfully.' 
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Refund Requested',
+              detail: 'Your refund request has been submitted successfully.'
             });
           }
         },
         error: (err) => {
-          this.messageService.add({ 
-            severity: 'error', 
-            summary: 'Error', 
-            detail: err.error?.message || 'Failed to submit refund request.' 
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: err.error?.message || 'Failed to submit refund request.'
           });
         }
       });

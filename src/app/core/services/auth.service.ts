@@ -119,4 +119,8 @@ export class AuthService {
       },
     });
   }
+
+  changePassword(passwords: Record<string, string>) {
+    return this.http.put<Record<string, any>>(`${this.apiUrl}/change-password`, passwords);
+  }
 }

@@ -10,6 +10,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ProductService } from '../../../../core/services/product.service';
+import { CollectionService } from '../../../../core/services/collection.service';
 import { Product } from '../../../../core/interface/product.interface';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
@@ -48,6 +49,7 @@ import { TooltipModule } from 'primeng/tooltip';
 })
 export class ProductsManagement implements OnInit {
   private productService = inject(ProductService);
+  private collectionService = inject(CollectionService);
   private messageService = inject(MessageService);
   private confirmationService = inject(ConfirmationService);
   private fb = inject(FormBuilder);
@@ -55,6 +57,7 @@ export class ProductsManagement implements OnInit {
   products = this.productService.products;
   categories = this.productService.categories;
   subCategories = this.productService.subCategories;
+  collections = this.collectionService.collections;
   loading = this.productService.isLoading;
 
   productForm: FormGroup = this.fb.group({
@@ -64,6 +67,7 @@ export class ProductsManagement implements OnInit {
     stock: [0, [Validators.required, Validators.min(0)]],
     categoryId: [''],
     subCategoryId: [''],
+    collectionId: [''],
   });
 
   filterForm: FormGroup = this.fb.group({
@@ -108,6 +112,7 @@ export class ProductsManagement implements OnInit {
     this.loadProducts();
     this.productService.getCategories().subscribe();
     this.productService.getSubCategories().subscribe();
+    this.collectionService.getCollections().subscribe();
   }
 
   loadProducts() {
@@ -151,6 +156,7 @@ export class ProductsManagement implements OnInit {
       stock: product.stock,
       categoryId: product.categoryId?._id || '',
       subCategoryId: product.subCategoryId?._id || '',
+      collectionId: product.collectionId?._id || '',
     });
 
     this.productDialog.set(true);

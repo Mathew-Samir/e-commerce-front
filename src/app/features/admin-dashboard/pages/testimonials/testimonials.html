@@ -1,24 +1,32 @@
-<div class="testimonials-container p-4">
-  <div class="mb-4">
-    <h2 class="m-0 text-3xl font-bold text-900">Testimonials Management</h2>
-    <p class="text-600">Review and manage customer feedback</p>
+<div class="admin-page">
+  <div class="admin-page-header">
+    <div class="admin-header-content">
+      <div class="admin-header-icon orange">
+        <i class="pi pi-comment"></i>
+      </div>
+      <div>
+        <h1 class="admin-page-title">Testimonials Management</h1>
+        <p class="admin-page-subtitle">Review and manage customer feedback</p>
+      </div>
+    </div>
   </div>
 
-  <div class="card shadow-2 border-round-xl overflow-hidden bg-white">
+  <div class="admin-table-card">
     <p-table
       [value]="loading() ? skeletonRows : testimonials()"
       [paginator]="!loading()"
       [rows]="10"
       [responsiveLayout]="'scroll'"
-      styleClass="p-datatable-striped"
+      [rowHover]="true"
+      styleClass="admin-table"
     >
       <ng-template pTemplate="header">
         <tr>
-          <th class="bg-gray-50">Author</th>
-          <th class="bg-gray-50">Comment</th>
-          <th class="bg-gray-50">Rating</th>
-          <th class="bg-gray-50">Status</th>
-          <th class="bg-gray-50 text-center" style="width: 150px">Actions</th>
+          <th>Author</th>
+          <th>Comment</th>
+          <th>Rating</th>
+          <th>Status</th>
+          <th class="text-center" style="width: 150px">Actions</th>
         </tr>
       </ng-template>
 
@@ -44,23 +52,21 @@
         } @else {
           <tr>
             <td>
-              <div class="flex align-items-center gap-2">
+              <div class="admin-user-cell">
                 <img
-                  [src]="
-                    'https://ui-avatars.com/api/?name=' +
-                    getAuthorName(testimonial.userId) +
-                    '&background=random'
-                  "
-                  class="border-circle"
-                  style="width: 32px"
+                  [src]="'https://ui-avatars.com/api/?name=' + getAuthorName(testimonial.userId) + '&background=random'"
+                  class="admin-avatar"
                 />
-                <span class="font-semibold">{{ getAuthorName(testimonial.userId) }}</span>
+                <div class="admin-user-info">
+                  <span class="admin-user-name">{{ getAuthorName(testimonial.userId) }}</span>
+                </div>
               </div>
             </td>
             <td>
               <div
-                class="text-700 line-height-3 max-w-20rem overflow-hidden text-overflow-ellipsis white-space-nowrap"
+                class="admin-truncate"
                 [pTooltip]="testimonial.comment"
+                tooltipPosition="top"
               >
                 {{ testimonial.comment }}
               </div>
@@ -71,24 +77,24 @@
             <td>
               @switch (testimonial.status) {
                 @case ('approved') {
-                  <span class="px-2 py-1 border-round-md bg-green-50 text-green-700 text-xs font-bold uppercase">
+                  <span class="admin-status-badge active">
                     Approved
                   </span>
                 }
                 @case ('rejected') {
-                  <span class="px-2 py-1 border-round-md bg-red-50 text-red-700 text-xs font-bold uppercase">
+                  <span class="admin-status-badge inactive">
                     Rejected
                   </span>
                 }
                 @default {
-                  <span class="px-2 py-1 border-round-md bg-orange-50 text-orange-700 text-xs font-bold uppercase">
+                  <span class="admin-status-badge" style="background: #fef3c7; color: #92400e;">
                     Pending
                   </span>
                 }
               }
             </td>
             <td>
-              <div class="flex gap-2 justify-content-center">
+              <div class="admin-actions-cell">
                 @if (testimonial.status === 'pending') {
                   <p-button
                     icon="pi pi-check"
@@ -96,6 +102,7 @@
                     [text]="true"
                     severity="success"
                     pTooltip="Approve"
+                    tooltipPosition="top"
                     (onClick)="approveTestimonial(testimonial)"
                   />
                   <p-button
@@ -104,6 +111,7 @@
                     [text]="true"
                     severity="warn"
                     pTooltip="Reject"
+                    tooltipPosition="top"
                     (onClick)="rejectTestimonial(testimonial)"
                   />
                 }
@@ -113,6 +121,7 @@
                   [text]="true"
                   severity="danger"
                   pTooltip="Delete"
+                  tooltipPosition="top"
                   (onClick)="deleteTestimonial(testimonial)"
                 />
               </div>
@@ -123,10 +132,13 @@
 
       <ng-template pTemplate="emptymessage">
         <tr>
-          <td colspan="5" class="text-center p-5">
-            <div class="flex flex-column align-items-center gap-3">
-              <i class="pi pi-comment text-4xl text-400"></i>
-              <span class="text-600 font-medium">No testimonials found.</span>
+          <td colspan="5">
+            <div class="admin-empty-state">
+              <div class="admin-empty-icon">
+                <i class="pi pi-comment"></i>
+              </div>
+              <h3>No testimonials found</h3>
+              <p>There are no customer testimonials to display at the moment.</p>
             </div>
           </td>
         </tr>

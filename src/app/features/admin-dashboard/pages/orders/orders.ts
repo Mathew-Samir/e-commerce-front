@@ -52,7 +52,19 @@ export class OrdersManagement implements OnInit {
     { label: 'Rejected', value: 'rejected' },
     { label: 'Cancelled (User)', value: 'cancelledByUser' },
     { label: 'Cancelled (Admin)', value: 'cancelledByAdmin' },
-    { label: 'Refunded', value: 'refunded' },
+  ];
+
+  filterStatus = signal<string | null>(null);
+
+  filterOptions = [
+    { label: 'All Statuses', value: null },
+    { label: 'pending', value: 'pending' },
+    { label: 'preparing', value: 'preparing' },
+    { label: 'shipped', value: 'shipped' },
+    { label: 'received', value: 'received' },
+    { label: 'cancelled by User', value: 'cancelledByUser' },
+    { label: 'cancelled by Admin', value: 'cancelledByAdmin' },
+    { label: 'rejected', value: 'rejected' },
   ];
 
   skeletonRows = Array(5).fill({});
@@ -63,7 +75,10 @@ export class OrdersManagement implements OnInit {
 
   loadOrders() {
     this.loading.set(true);
-    this.orderService.getAllOrders().subscribe({
+    const status = this.filterStatus();
+    const filters = status ? { status } : {};
+
+    this.orderService.getAllOrders(filters).subscribe({
       next: () => this.loading.set(false),
       error: () => this.loading.set(false),
     });
@@ -106,6 +121,8 @@ export class OrdersManagement implements OnInit {
 
   getStatusLabel(status: string): string {
     const option = this.statusOptions.find((o) => o.value === status);
-    return option ? option.label : status;
+    if (option) return option.label;
+    if (status === 'refunded') return 'Refunded';
+    return status;
   }
 }

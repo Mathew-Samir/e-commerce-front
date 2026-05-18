@@ -22,16 +22,82 @@
   </div>
 </section>
 
+@if (seasonalProducts().length > 0) {
+  <section class="seasonal-products">
+    <div class="container">
+      <div class="section-header">
+        <div class="seasonal-badge">
+          <i class="pi pi-sparkles"></i>
+          <span>Seasonal</span>
+        </div>
+        <h2>
+          @if (activeCollections().length > 0) {
+            {{ activeCollections()[0].title }}
+          } @else {
+            Seasonal Collection
+          }
+        </h2>
+        <p>Limited time picks curated just for this season</p>
+      </div>
+
+      <div class="card">
+        <p-carousel
+          [value]="seasonalProducts()"
+          [numVisible]="3"
+          [numScroll]="1"
+          [responsiveOptions]="responsiveOptions"
+          [circular]="true"
+          [autoplayInterval]="4000">
+          <ng-template let-product pTemplate="item">
+            <div class="product-item">
+              <div class="product-card seasonal-card">
+                <div class="product-image-container">
+                  <img
+                    [src]="product.image"
+                    [alt]="product.name"
+                    class="product-image" />
+                  <p-tag
+                    [value]="getStockStatus(product.stock)"
+                    [severity]="getSeverity(product.stock)"
+                    class="status-tag">
+                  </p-tag>
+                  @if (product.collectionId?.title) {
+                    <span class="collection-label">{{ product.collectionId.title }}</span>
+                  }
+                </div>
+                <div class="product-info">
+                  <h4 class="product-name">
+                    {{ product.name }}
+                    <span class="stock-qty" style="font-size: 0.95rem; color: #d32f2f; font-weight: 600; display: block; margin-top: 0.25rem;">
+                      Stock: {{ product.stock }} available
+                    </span>
+                  </h4>
+                  <div class="product-footer">
+                    <span class="product-price">{{ '$' + product.price }}</span>
+                    <div class="product-actions">
+                      <p-button icon="pi pi-shopping-cart" class="cart-btn" (onClick)="addToCart(product)" [disabled]="product.stock === 0" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </ng-template>
+        </p-carousel>
+      </div>
+    </div>
+  </section>
+}
+
 <section class="featured-products">
   <div class="container">
     <div class="section-header">
-      <h2>Featured Products</h2>
-      <p>Explore our most popular items</p>
+      <h2>Best Sellers</h2>
+      <p>Our most popular items loved by customers</p>
     </div>
 
     <div class="card">
       <p-carousel
-        [value]="products()"
+        [value]="bestSellers()"
         [numVisible]="3"
         [numScroll]="1"
         [responsiveOptions]="responsiveOptions"
@@ -48,18 +114,22 @@
                   class="product-image"
                 />
                 <p-tag
-                  [value]="product.inventoryStatus"
-                  [severity]="getSeverity(product.inventoryStatus)"
+                  [value]="getStockStatus(product.stock)"
+                  [severity]="getSeverity(product.stock)"
                   class="status-tag"
                 ></p-tag>
               </div>
               <div class="product-info">
-                <h4 class="product-name">{{ product.name }}</h4>
+                <h4 class="product-name">
+                  {{ product.name }}
+                  <span class="stock-qty" style="font-size: 0.95rem; color: #d32f2f; font-weight: 600; display: block; margin-top: 0.25rem;">
+                    Stock: {{ product.stock }} available
+                  </span>
+                </h4>
                 <div class="product-footer">
                   <span class="product-price">{{ '$' + product.price }}</span>
                   <div class="product-actions">
-                    <p-button icon="pi pi-heart" [outlined]="true" class="wishlist-btn" />
-                    <p-button icon="pi pi-shopping-cart" class="cart-btn" (onClick)="addToCart(product)" />
+                    <p-button icon="pi pi-shopping-cart" class="cart-btn" (onClick)="addToCart(product)" [disabled]="product.stock === 0" />
                   </div>
                 </div>
               </div>

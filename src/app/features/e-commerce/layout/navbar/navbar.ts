@@ -1,17 +1,21 @@
-import { Component, OnInit, computed, inject } from '@angular/core';
+import { Component, OnInit, computed, inject, ChangeDetectionStrategy } from '@angular/core';
 import { MenubarModule } from 'primeng/menubar';
 import { MenuItem } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { BadgeModule } from 'primeng/badge';
 import { RouterLink } from '@angular/router';
+import { MenuModule } from 'primeng/menu';
+import { ViewChild } from '@angular/core';
+import { Menu } from 'primeng/menu';
 import { CartService } from '../../../../core/services/cart.service';
 import { AuthService } from '../../../../core/services/auth.service';
 
 @Component({
   selector: 'app-navbar',
-  imports: [MenubarModule, ButtonModule, BadgeModule, RouterLink],
+  imports: [MenubarModule, ButtonModule, BadgeModule, RouterLink, MenuModule],
   templateUrl: './navbar.html',
   styleUrl: './navbar.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Navbar implements OnInit {
   private cartService = inject(CartService);
@@ -20,6 +24,34 @@ export class Navbar implements OnInit {
   cartCount = this.cartService.cartCount;
   currentUser = this.authService.currentUser;
   isAuthenticated = this.authService.isAuthenticated;
+
+  @ViewChild('menu') menu!: Menu;
+
+  profileItems = computed<MenuItem[]>(() => [
+    {
+      label: 'My Orders',
+      icon: 'pi pi-shopping-bag',
+      routerLink: '/my-orders'
+    },
+    {
+      label: 'My Refunds',
+      icon: 'pi pi-refresh',
+      routerLink: '/my-refunds'
+    },
+    {
+      label: 'Change Password',
+      icon: 'pi pi-key',
+      routerLink: '/change-password'
+    },
+    {
+      separator: true
+    },
+    {
+      label: 'Logout',
+      icon: 'pi pi-sign-out',
+      command: () => this.logout()
+    }
+  ]);
 
   items = computed<MenuItem[]>(() => {
     const baseItems: MenuItem[] = [
@@ -39,21 +71,6 @@ export class Navbar implements OnInit {
         routerLink: '/testimonials',
       },
     ];
-
-    if (this.isAuthenticated()) {
-      baseItems.push(
-        {
-          label: 'My Orders',
-          icon: 'pi pi-shopping-bag',
-          routerLink: '/my-orders'
-        },
-        {
-          label: 'My Refunds',
-          icon: 'pi pi-refresh',
-          routerLink: '/my-refunds'
-        }
-      );
-    }
 
     return baseItems;
   });

@@ -4,7 +4,7 @@
     <div class="order-header">
       <div class="header-titles">
         <h1>
-          @if (currentOrder.status === 'Cancelled') {
+          @if (currentOrder.status === 'cancelledByUser' || currentOrder.status === 'cancelledByAdmin') {
             Order Cancelled
           } @else {
             Order Successfully Placed!

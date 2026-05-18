@@ -1,0 +1,240 @@
+<div class="admin-page">
+  <p-toast />
+  <p-confirmDialog />
+
+  <div class="admin-page-header">
+    <div class="admin-header-content">
+      <div class="admin-header-icon purple">
+        <i class="pi pi-calendar"></i>
+      </div>
+      <div>
+        <h1 class="admin-page-title">Collections Management</h1>
+        <p class="admin-page-subtitle">Manage seasonal collections and link products</p>
+      </div>
+    </div>
+    <div class="admin-header-actions">
+      <p-button
+        icon="pi pi-plus"
+        label="New Collection"
+        (onClick)="openNew()"
+        [rounded]="true"
+        styleClass="p-button-primary p-button-raised border-round-lg shadow-2">
+      </p-button>
+    </div>
+  </div>
+
+  <div class="admin-table-card">
+    <p-table
+      [value]="loading() ? skeletonRows : collections()"
+      [paginator]="!loading()"
+      [rows]="10"
+      [responsiveLayout]="'scroll'"
+      styleClass="admin-table"
+      [showCurrentPageReport]="true"
+      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} collections">
+
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Title</th>
+          <th>Slug</th>
+          <th>Start Date</th>
+          <th>End Date</th>
+          <th>Status</th>
+          <th class="text-center" style="width: 120px">Actions</th>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="body" let-collection>
+        @if (loading()) {
+          <tr>
+            <td><p-skeleton width="8rem" height="1.25rem"></p-skeleton></td>
+            <td><p-skeleton width="5rem" height="1.25rem"></p-skeleton></td>
+            <td><p-skeleton width="6rem" height="1.25rem"></p-skeleton></td>
+            <td><p-skeleton width="6rem" height="1.25rem"></p-skeleton></td>
+            <td><p-skeleton width="4rem" height="1.5rem" borderRadius="1rem"></p-skeleton></td>
+            <td>
+              <div class="flex justify-content-center gap-2">
+                <p-skeleton shape="circle" size="2rem"></p-skeleton>
+                <p-skeleton shape="circle" size="2rem"></p-skeleton>
+              </div>
+            </td>
+          </tr>
+        } @else {
+          <tr>
+            <td>
+              <div class="flex align-items-center gap-2">
+                <i class="pi pi-calendar-clock text-purple-400"></i>
+                <span class="font-bold text-900">{{ collection.title }}</span>
+              </div>
+            </td>
+            <td>
+              <span class="collection-slug">{{ collection.name }}</span>
+            </td>
+            <td>
+              <span class="admin-date">{{ collection.startDate | date:'MMM d, yyyy' }}</span>
+            </td>
+            <td>
+              <span class="admin-date">{{ collection.endDate | date:'MMM d, yyyy' }}</span>
+            </td>
+            <td>
+              <span class="collection-status {{ getStatusClass(collection) }}"
+                    (click)="toggleActive(collection)">
+                {{ getStatusLabel(collection) }}
+              </span>
+            </td>
+            <td>
+              <div class="admin-actions-cell">
+                <p-button
+                  icon="pi pi-pencil"
+                  [rounded]="true"
+                  [text]="true"
+                  severity="secondary"
+                  pTooltip="Edit Collection"
+                  tooltipPosition="top"
+                  (onClick)="editCollection(collection)" />
+                <p-button
+                  icon="pi pi-trash"
+                  [rounded]="true"
+                  [text]="true"
+                  severity="danger"
+                  pTooltip="Delete Collection"
+                  tooltipPosition="top"
+                  (onClick)="deleteCollection(collection)" />
+              </div>
+            </td>
+          </tr>
+        }
+      </ng-template>
+
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="6">
+            <div class="admin-empty-state">
+              <div class="admin-empty-icon">
+                <i class="pi pi-calendar"></i>
+              </div>
+              <h3>No collections yet</h3>
+              <p>Create your first seasonal collection to organize products.</p>
+              <p-button
+                label="Create First Collection"
+                icon="pi pi-plus"
+                (onClick)="openNew()"
+                severity="secondary"
+                [rounded]="true">
+              </p-button>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</div>
+
+<!-- Collection Dialog -->
+<p-dialog
+  [(visible)]="collectionDialog"
+  [style]="{ width: '550px' }"
+  [header]="isEdit() ? 'Edit Collection' : 'Create New Collection'"
+  [modal]="true"
+  styleClass="admin-dialog"
+  [draggable]="false"
+  [resizable]="false">
+
+  <ng-template pTemplate="content">
+    <form [formGroup]="collectionForm" class="admin-dialog-form">
+      <div class="admin-field">
+        <label for="col-name">Slug Name</label>
+        <input
+          type="text"
+          pInputText
+          id="col-name"
+          formControlName="name"
+          placeholder="e.g. summer-2026" />
+        @if (collectionForm.get('name')?.invalid && collectionForm.get('name')?.touched) {
+          <small class="p-error block">Slug name is required (2-50 chars).</small>
+        }
+      </div>
+
+      <div class="admin-field">
+        <label for="col-title">Display Title</label>
+        <input
+          type="text"
+          pInputText
+          id="col-title"
+          formControlName="title"
+          placeholder="e.g. Summer Collection 2026" />
+        @if (collectionForm.get('title')?.invalid && collectionForm.get('title')?.touched) {
+          <small class="p-error block">Title is required (2-100 chars).</small>
+        }
+      </div>
+
+      <div class="flex gap-3">
+        <div class="admin-field flex-1">
+          <label for="col-start">Start Date</label>
+          <p-datepicker
+            id="col-start"
+            formControlName="startDate"
+            dateFormat="mm/dd/yy"
+            [showIcon]="true"
+            [showButtonBar]="true"
+            appendTo="body"
+            placeholder="Select start date"
+            styleClass="w-full" />
+          @if (collectionForm.get('startDate')?.invalid && collectionForm.get('startDate')?.touched) {
+            <small class="p-error block">Start date is required.</small>
+          }
+        </div>
+        <div class="admin-field flex-1">
+          <label for="col-end">End Date</label>
+          <p-datepicker
+            id="col-end"
+            formControlName="endDate"
+            dateFormat="mm/dd/yy"
+            [showIcon]="true"
+            [showButtonBar]="true"
+            appendTo="body"
+            placeholder="Select end date"
+            styleClass="w-full" />
+          @if (collectionForm.get('endDate')?.invalid && collectionForm.get('endDate')?.touched) {
+            <small class="p-error block">End date is required.</small>
+          }
+        </div>
+      </div>
+
+      <div class="admin-field">
+        <label for="col-banner">Banner Image URL (Optional)</label>
+        <input
+          type="text"
+          pInputText
+          id="col-banner"
+          formControlName="bannerImage"
+          placeholder="https://example.com/banner.jpg" />
+      </div>
+
+      <div class="admin-field">
+        <div class="flex align-items-center gap-3">
+          <p-toggleswitch formControlName="isActive" />
+          <label class="mb-0">Active</label>
+        </div>
+      </div>
+    </form>
+  </ng-template>
+
+  <ng-template pTemplate="footer">
+    <p-button
+      label="Cancel"
+      icon="pi pi-times"
+      [text]="true"
+      severity="secondary"
+      (onClick)="hideDialog()">
+    </p-button>
+    <p-button
+      [label]="isEdit() ? 'Save Changes' : 'Create Collection'"
+      icon="pi pi-check"
+      [loading]="loading()"
+      (onClick)="saveCollection()"
+      [disabled]="collectionForm.invalid"
+      styleClass="p-button-raised">
+    </p-button>
+  </ng-template>
+</p-dialog>

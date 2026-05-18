@@ -22,6 +22,19 @@
       <div class="filters-container">
         <div class="filter-group">
           <p-select
+            [options]="activeCollections()"
+            [ngModel]="selectedCollection()"
+            (ngModelChange)="selectedCollection.set($event)"
+            optionLabel="title"
+            optionValue="_id"
+            placeholder="All Collections"
+            [showClear]="true"
+            styleClass="w-full md:w-15rem"
+          />
+        </div>
+
+        <div class="filter-group">
+          <p-select
             [options]="sortOptions"
             [ngModel]="selectedSort()"
             (ngModelChange)="selectedSort.set($event)"
@@ -30,8 +43,6 @@
             styleClass="w-full md:w-15rem"
           />
         </div>
-
-
       </div>
     </div>
 
@@ -52,6 +63,9 @@
                   [severity]="getSeverity(product.stock)"
                   class="status-tag"
                 ></p-tag>
+                @if (product.collectionId?.title) {
+                  <span class="collection-tag">{{ product.collectionId?.title }}</span>
+                }
               </div>
               <div class="product-info">
                 <div
@@ -65,7 +79,12 @@
                     <span> - {{ product.subCategoryId?.title }}</span>
                   }
                 </div>
-                <h4 class="product-name">{{ product.name }}</h4>
+                <h4 class="product-name">
+                  {{ product.name }}
+                  <span class="stock-qty" style="font-size: 0.95rem; color: #d32f2f; font-weight: 600; display: block; margin-top: 0.25rem;">
+                    Stock: {{ product.stock }} available
+                  </span>
+                </h4>
                 <div class="product-footer">
                   <span class="product-price">{{ '$' + product.price }}</span>
                   <div class="product-actions">
@@ -75,11 +94,12 @@
                       class="view-btn"
                       (click)="showProductDetails(product)"
                     />
-                    <p-button icon="pi pi-heart" [outlined]="true" class="wishlist-btn" />
                     <p-button
                       icon="pi pi-shopping-cart"
                       class="cart-btn"
                       (onClick)="addToCart(product)"
+                      [disabled]="product.stock === 0"
+                      [pTooltip]="product.stock === 0 ? 'Out of Stock' : 'Add to Cart'"
                     />
                   </div>
                 </div>
@@ -97,7 +117,7 @@
             }
             <p-button
               label="Clear All Filters"
-              (click)="searchTerm.set(''); selectedSort.set(null)"
+              (click)="searchTerm.set(''); selectedSort.set(null); selectedCollection.set(null)"
               severity="secondary"
               [text]="true"
             />
@@ -151,12 +171,7 @@
               label="Add to Cart"
               class="p-button-lg"
               (onClick)="addToCart(product)"
-            />
-            <p-button
-              icon="pi pi-heart"
-              [outlined]="true"
-              label="Add to Wishlist"
-              class="p-button-lg"
+              [disabled]="product.stock === 0"
             />
           </div>
         </div>

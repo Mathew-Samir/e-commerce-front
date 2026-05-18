@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, inject, signal, computed, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RefundService } from '../../../../core/services/refund.service';
 import { TableModule } from 'primeng/table';
@@ -36,6 +36,10 @@ export class RefundsManagement implements OnInit {
   refunds = signal<Refund[]>([]);
   loading = signal<boolean>(false);
   skeletonRows = Array(5).fill({});
+
+  pendingCount = computed(() => this.refunds().filter(r => r.status === 'pending').length);
+  approvedCount = computed(() => this.refunds().filter(r => r.status === 'approved').length);
+  rejectedCount = computed(() => this.refunds().filter(r => r.status === 'rejected').length);
 
   ngOnInit() {
     this.loadRefunds();
@@ -109,10 +113,37 @@ export class RefundsManagement implements OnInit {
   }
 
   getOrderNumber(refund: Refund): string {
-    return typeof refund.orderId === 'object' ? refund.orderId.orderNumber : refund.orderId;
+    if (typeof refund.orderId === 'object' && refund.orderId !== null) {
+      return refund.orderId._id;
+    }
+    return refund.orderId as string;
+  }
+
+  getShortOrderId(refund: Refund): string {
+    const id = this.getOrderNumber(refund);
+    return id.length > 8 ? `${id.slice(-8).toUpperCase()}` : id;
   }
 
   getUserName(refund: Refund): string {
-    return typeof refund.user === 'object' ? refund.user.name : 'Unknown User';
+    if (typeof refund.userId === 'object' && refund.userId !== null) {
+      return refund.userId.name;
+    }
+    return 'Unknown User';
+  }
+
+  getUserEmail(refund: Refund): string {
+    if (typeof refund.userId === 'object' && refund.userId !== null) {
+      return refund.userId.email;
+    }
+    return '';
+  }
+
+  getUserInitials(refund: Refund): string {
+    const name = this.getUserName(refund);
+    const parts = name.split(' ');
+    if (parts.length >= 2) {
+      return (parts[0][0] + parts[1][0]).toUpperCase();
+    }
+    return name.slice(0, 2).toUpperCase();
   }
 }

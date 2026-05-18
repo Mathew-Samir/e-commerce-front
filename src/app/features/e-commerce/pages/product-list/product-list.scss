@@ -234,6 +234,22 @@
           color: #854d0e;
         }
       }
+
+      .collection-tag {
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+        background: linear-gradient(135deg, #8b5cf6, #6366f1);
+        color: #fff;
+        font-size: 0.7rem;
+        font-weight: 700;
+        padding: 0.3rem 0.7rem;
+        border-radius: 6px;
+        letter-spacing: 0.3px;
+        text-transform: uppercase;
+        box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+        z-index: 2;
+      }
     }
 
     &:hover .product-image {

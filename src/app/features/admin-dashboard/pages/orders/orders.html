@@ -1,30 +1,47 @@
-<div class="orders-management-container">
+<div class="admin-page">
   <p-toast />
 
-  <div class="header-section">
-    <div class="title-group">
-      <h1>Order Management</h1>
-      <p>Review and process customer orders</p>
+  <!-- Header -->
+  <div class="admin-page-header">
+    <div class="admin-header-content">
+      <div class="admin-header-icon blue">
+        <i class="pi pi-shopping-bag"></i>
+      </div>
+      <div>
+        <h1 class="admin-page-title">Order Management</h1>
+        <p class="admin-page-subtitle">Review and process customer orders</p>
+      </div>
     </div>
-    <p-button 
-      icon="pi pi-refresh" 
-      severity="secondary" 
-      [rounded]="true" 
-      [text]="true" 
-      (onClick)="loadOrders()" 
-      pTooltip="Refresh Orders" />
+    <div class="admin-header-actions">
+      <p-select
+        [options]="filterOptions"
+        [ngModel]="filterStatus()"
+        (ngModelChange)="filterStatus.set($event); loadOrders()"
+        placeholder="Filter by Status"
+        styleClass="w-15rem" />
+      <p-button
+        icon="pi pi-refresh"
+        severity="secondary"
+        [rounded]="true"
+        [text]="true"
+        (onClick)="loadOrders()"
+        pTooltip="Refresh Orders" />
+    </div>
   </div>
 
-  <div class="card shadow-4 border-round-xl overflow-hidden bg-white-alpha-70 backdrop-blur-20 border-1 border-white-alpha-10">
-    <p-table 
-      [value]="loading() ? skeletonRows : orders()" 
-      [rows]="10" 
-      [paginator]="true" 
+  <!-- Table -->
+  <div class="admin-table-card">
+    <p-table
+      [value]="loading() ? skeletonRows : orders()"
+      [rows]="10"
+      [paginator]="true"
       [responsiveLayout]="'scroll'"
-      styleClass="p-datatable-lg">
+      [rowHover]="true"
+      styleClass="admin-table"
+    >
       <ng-template pTemplate="header">
         <tr>
-          <th>Order ID</th>
+          <th>Order</th>
           <th>Customer</th>
           <th>Date</th>
           <th>Total</th>
@@ -35,37 +52,48 @@
       <ng-template pTemplate="body" let-order>
         @if (loading()) {
           <tr>
-            <td><p-skeleton width="100%" /></td>
-            <td><p-skeleton width="100%" /></td>
-            <td><p-skeleton width="100%" /></td>
-            <td><p-skeleton width="60px" /></td>
-            <td><p-skeleton width="100px" /></td>
-            <td><p-skeleton width="150px" /></td>
+            <td><p-skeleton width="5rem" /></td>
+            <td><p-skeleton width="8rem" /></td>
+            <td><p-skeleton width="6rem" /></td>
+            <td><p-skeleton width="4rem" /></td>
+            <td><p-skeleton width="5rem" borderRadius="1rem" /></td>
+            <td><p-skeleton width="10rem" /></td>
           </tr>
         } @else {
           <tr>
             <td>
-              <span class="font-mono text-sm">#{{ order._id.substring(order._id.length - 8) }}</span>
-            </td>
-            <td>
-              <div class="flex flex-column">
-                <span class="font-bold">{{ order.userId?.name || 'Unknown' }}</span>
-                <small class="text-secondary">{{ order.phoneNumber }}</small>
+              <div class="admin-id-cell">
+                <i class="pi pi-hashtag"></i>
+                <span class="admin-id-text" [pTooltip]="order._id" tooltipPosition="top">
+                  {{ order._id.substring(order._id.length - 8).toUpperCase() }}
+                </span>
               </div>
             </td>
-            <td>{{ order.createdAt | date: 'MMM d, y, h:mm a' }}</td>
             <td>
-              <span class="font-bold text-indigo-600">{{ order.totalPrice | currency }}</span>
+              <div class="admin-user-cell">
+                <div class="admin-avatar">{{ (order.userId?.name || 'U')[0].toUpperCase() }}</div>
+                <div class="admin-user-info">
+                  <span class="admin-user-name">{{ order.userId?.name || 'Unknown' }}</span>
+                  <span class="admin-user-secondary">{{ order.phoneNumber }}</span>
+                </div>
+              </div>
             </td>
             <td>
-              <p-tag 
-                [severity]="getStatusSeverity(order.status)" 
-                [value]="getStatusLabel(order.status)" />
+              <span class="admin-date">{{ order.createdAt | date: 'mediumDate' }}</span>
             </td>
             <td>
-              <p-select 
-                [options]="statusOptions" 
-                [(ngModel)]="order.status" 
+              <span class="admin-amount">{{ order.totalPrice | currency }}</span>
+            </td>
+            <td>
+              <p-tag
+                [severity]="getStatusSeverity(order.status)"
+                [value]="getStatusLabel(order.status)"
+                [rounded]="true" />
+            </td>
+            <td>
+              <p-select
+                [options]="statusOptions"
+                [(ngModel)]="order.status"
                 (onChange)="onStatusChange(order, $event.value)"
                 placeholder="Change Status"
                 styleClass="w-full text-sm"
@@ -76,9 +104,12 @@
       </ng-template>
       <ng-template pTemplate="emptymessage">
         <tr>
-          <td colspan="6" class="text-center p-5">
-            <i class="pi pi-inbox text-4xl text-gray-300 mb-3 block"></i>
-            <span class="text-gray-500">No orders found.</span>
+          <td colspan="6">
+            <div class="admin-empty-state">
+              <div class="admin-empty-icon"><i class="pi pi-inbox"></i></div>
+              <h3>No orders found</h3>
+              <p>There are no orders matching your current filters.</p>
+            </div>
           </td>
         </tr>
       </ng-template>

@@ -32,6 +32,7 @@ export class AdminDashboard {
     { label: 'Orders', icon: 'pi pi-shopping-cart', route: 'orders' },
     { label: 'Products', icon: 'pi pi-box', route: 'products' },
     { label: 'Categories', icon: 'pi pi-tags', route: 'categories' },
+    { label: 'Collections', icon: 'pi pi-calendar', route: 'collections' },
     { label: 'Testimonials', icon: 'pi pi-comments', route: 'testimonials' },
     { label: 'Refunds', icon: 'pi pi-receipt', route: 'refunds' },
     { label: 'Back to Site', icon: 'pi pi-arrow-left', route: '/home' },

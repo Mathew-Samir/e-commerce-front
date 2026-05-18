@@ -10,7 +10,7 @@ import { Testimonials } from './features/e-commerce/pages/testimonials/testimoni
 import { Cart } from './features/e-commerce/pages/cart/cart';
 
 
-import { adminGuard, userGuard } from './core/guards/role.guard';
+import { adminGuard, userGuard, authGuard } from './core/guards/role.guard';
 
 export const routes: Routes = [
   {
@@ -25,29 +25,34 @@ export const routes: Routes = [
       { path: 'testimonials', component: Testimonials },
       { path: 'signup', component: Signup },
       { path: 'login', component: Login },
-      { path: 'change-password', component: ChangePassword },
+      { path: 'change-password', component: ChangePassword, canActivate: [authGuard] },
       { path: 'cart', component: Cart },
       {
         path: 'order',
+        canActivate: [authGuard],
         loadComponent: () =>
           import('./features/e-commerce/pages/your-order/your-order').then((m) => m.YourOrder),
       },
       {
         path: 'order/:id',
+        canActivate: [authGuard],
         loadComponent: () =>
           import('./features/e-commerce/pages/your-order/your-order').then((m) => m.YourOrder),
       },
       {
         path: 'my-orders',
+        canActivate: [authGuard],
         loadComponent: () =>
           import('./features/e-commerce/pages/my-orders/my-orders').then((m) => m.MyOrders),
       },
       {
         path: 'my-refunds',
+        canActivate: [authGuard],
         loadComponent: () =>
           import('./features/e-commerce/pages/my-refunds/my-refunds').then((m) => m.MyRefunds),
       },
     ]
+
   },
   {
     path: 'admin',
@@ -96,6 +101,13 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/admin-dashboard/pages/categories/categories').then(
             (m) => m.CategoriesManagement,
+          ),
+      },
+      {
+        path: 'collections',
+        loadComponent: () =>
+          import('./features/admin-dashboard/pages/collections/collections').then(
+            (m) => m.CollectionsManagement,
           ),
       },
     ],

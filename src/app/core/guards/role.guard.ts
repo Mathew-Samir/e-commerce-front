@@ -34,3 +34,17 @@ export const userGuard: CanActivateFn = () => {
 
   return true;
 };
+
+/**
+ * Guard to ensure only authenticated users can access specific routes.
+ */
+export const authGuard: CanActivateFn = () => {
+  const authService = inject(AuthService);
+  const router = inject(Router);
+
+  if (authService.isAuthenticated()) {
+    return true;
+  }
+
+  return router.parseUrl('/login');
+};

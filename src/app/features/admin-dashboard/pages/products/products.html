@@ -1,60 +1,66 @@
-<div class="products-container">
-  <div class="header-section">
-    <div>
-      <h2>Products Management</h2>
-      <p>Organize and control your product inventory</p>
+<div class="admin-page">
+  <div class="admin-page-header">
+    <div class="admin-header-content">
+      <div class="admin-header-icon green">
+        <i class="pi pi-box"></i>
+      </div>
+      <div>
+        <h1 class="admin-page-title">Products Management</h1>
+        <p class="admin-page-subtitle">Organize and control your product inventory</p>
+      </div>
     </div>
-    <p-button
-      icon="pi pi-plus"
-      label="Add New Product"
-      (onClick)="openNew()"
-      styleClass="p-button-primary p-button-raised border-round-lg shadow-2"
-    ></p-button>
+    <div class="admin-header-actions">
+      <p-button
+        icon="pi pi-plus"
+        label="Add New Product"
+        (onClick)="openNew()"
+        [rounded]="true"
+        styleClass="p-button-primary p-button-raised border-round-lg shadow-2"
+      ></p-button>
+    </div>
   </div>
-  
+
   <!-- Filters Section -->
-  <div class="filters-section mb-4 p-4 border-round-xl bg-white shadow-1 flex gap-3 align-items-end" [formGroup]="filterForm">
-    <div class="filter-group flex-1">
-      <label class="block text-sm font-semibold text-600 mb-2">Filter by Category</label>
-      <p-select 
-        [options]="categories()" 
-        formControlName="categoryId" 
-        optionLabel="title" 
-        optionValue="_id" 
-        placeholder="All Categories" 
+  <div class="admin-filters-bar" [formGroup]="filterForm">
+    <div class="flex-1" style="min-width: 200px;">
+      <p-select
+        [options]="categories()"
+        formControlName="categoryId"
+        optionLabel="title"
+        optionValue="_id"
+        placeholder="Filter by Category"
         styleClass="w-full"
         (onChange)="onFilterCategoryChange()"
         [showClear]="true" />
     </div>
-    <div class="filter-group flex-1">
-      <label class="block text-sm font-semibold text-600 mb-2">Filter by Sub Category</label>
-      <p-select 
-        [options]="filterSubCategories()" 
-        formControlName="subCategoryId" 
-        optionLabel="title" 
-        optionValue="_id" 
-        placeholder="All Sub Categories" 
+    <div class="flex-1" style="min-width: 200px;">
+      <p-select
+        [options]="filterSubCategories()"
+        formControlName="subCategoryId"
+        optionLabel="title"
+        optionValue="_id"
+        placeholder="Filter by Sub Category"
         styleClass="w-full"
         [disabled]="!filterForm.get('categoryId')?.value"
         (onChange)="onFilterChange()"
         [showClear]="true" />
     </div>
-    <p-button 
-      icon="pi pi-filter-slash" 
-      label="Clear" 
-      [text]="true" 
-      severity="secondary" 
-      (onClick)="clearFilters()" 
+    <p-button
+      icon="pi pi-filter-slash"
+      label="Clear Filters"
+      [text]="true"
+      severity="secondary"
+      (onClick)="clearFilters()"
       [disabled]="!filterForm.get('categoryId')?.value && !filterForm.get('subCategoryId')?.value" />
   </div>
 
-  <div class="card shadow-4 border-round-xl overflow-hidden">
+  <div class="admin-table-card">
     <p-table
       [value]="loading() ? skeletonRows : products()"
       [paginator]="!loading()"
       [rows]="10"
       [responsiveLayout]="'scroll'"
-      styleClass="p-datatable-sm"
+      styleClass="admin-table"
       [showCurrentPageReport]="true"
       currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products"
     >
@@ -104,15 +110,16 @@
               <div class="flex flex-column gap-1">
                 <span class="font-bold text-900">{{ product.name }}</span>
                 <span
-                  class="text-xs text-500 max-w-15rem overflow-hidden text-overflow-ellipsis white-space-nowrap"
+                  class="admin-truncate"
                   [pTooltip]="product.description"
+                  tooltipPosition="top"
                 >
                   {{ product.description }}
                 </span>
               </div>
             </td>
             <td>
-              <span class="font-semibold text-primary text-lg">{{ product.price | currency }}</span>
+              <span class="admin-amount">{{ product.price | currency }}</span>
             </td>
             <td>
               <div class="flex align-items-center gap-2">
@@ -124,19 +131,20 @@
             </td>
             <td>
               @if (product.isActive) {
-                <span class="status-badge active" (click)="toggleActive(product)">Active</span>
+                <span class="admin-status-badge active" (click)="toggleActive(product)">Active</span>
               } @else {
-                <span class="status-badge inactive" (click)="toggleActive(product)">Inactive</span>
+                <span class="admin-status-badge inactive" (click)="toggleActive(product)">Inactive</span>
               }
             </td>
             <td>
-              <div class="flex gap-1 justify-content-center">
+              <div class="admin-actions-cell">
                 <p-button
                   icon="pi pi-pencil"
                   [rounded]="true"
                   [text]="true"
                   severity="secondary"
                   pTooltip="Edit Product"
+                  tooltipPosition="top"
                   (onClick)="editProduct(product)"
                 />
                 <p-button
@@ -145,6 +153,7 @@
                   [text]="true"
                   severity="danger"
                   pTooltip="Delete Product"
+                  tooltipPosition="top"
                   (onClick)="deleteProduct(product)"
                 />
               </div>
@@ -155,24 +164,19 @@
 
       <ng-template pTemplate="emptymessage">
         <tr>
-          <td colspan="6" class="text-center p-8">
-            <div class="flex flex-column align-items-center gap-4">
-              <div
-                class="w-8rem h-8rem border-circle bg-gray-50 flex align-items-center justify-content-center shadow-inset"
-              >
-                <i class="pi pi-box text-6xl text-200"></i>
+          <td colspan="6">
+            <div class="admin-empty-state">
+              <div class="admin-empty-icon">
+                <i class="pi pi-box"></i>
               </div>
-              <div class="flex flex-column gap-2">
-                <span class="text-xl font-bold text-900">No products yet</span>
-                <span class="text-600"
-                  >Start adding products to your catalog to see them here.</span
-                >
-              </div>
+              <h3>No products yet</h3>
+              <p>Start adding products to your catalog to see them here.</p>
               <p-button
                 label="Add First Product"
                 icon="pi pi-plus"
                 (onClick)="openNew()"
                 severity="secondary"
+                [rounded]="true"
               ></p-button>
             </div>
           </td>
@@ -187,13 +191,13 @@
   [style]="{ width: '550px' }"
   [header]="isEdit() ? 'Edit Product' : 'Create New Product'"
   [modal]="true"
-  styleClass="product-dialog p-fluid"
+  styleClass="admin-dialog"
   [draggable]="false"
   [resizable]="false"
 >
   <ng-template pTemplate="content">
-    <form [formGroup]="productForm" class="flex flex-column gap-4">
-      <div class="premium-input-group">
+    <form [formGroup]="productForm" class="admin-dialog-form">
+      <div class="admin-field">
         <label for="name">Product Name</label>
         <input
           type="text"
@@ -207,7 +211,7 @@
         }
       </div>
 
-      <div class="premium-input-group">
+      <div class="admin-field">
         <label for="description">Description</label>
         <textarea
           pInputTextarea
@@ -219,7 +223,7 @@
       </div>
 
       <div class="flex gap-3">
-        <div class="premium-input-group flex-1">
+        <div class="admin-field flex-1">
           <label for="price">Price</label>
           <p-inputNumber
             id="price"
@@ -230,14 +234,14 @@
             placeholder="$0.00"
           ></p-inputNumber>
         </div>
-        <div class="premium-input-group flex-1">
+        <div class="admin-field flex-1">
           <label for="stock">Stock Level</label>
           <p-inputNumber id="stock" formControlName="stock" placeholder="0"></p-inputNumber>
         </div>
       </div>
 
       <div class="flex gap-3">
-        <div class="premium-input-group flex-1">
+        <div class="admin-field flex-1">
           <label for="categoryId">Category</label>
           <p-select
             id="categoryId"
@@ -248,9 +252,10 @@
             placeholder="Select Category"
             (onChange)="onCategoryChange($event.value)"
             appendTo="body"
+            styleClass="w-full"
           ></p-select>
         </div>
-        <div class="premium-input-group flex-1">
+        <div class="admin-field flex-1">
           <label for="subCategoryId">Sub Category</label>
           <p-select
             id="subCategoryId"
@@ -261,29 +266,45 @@
             placeholder="Select Sub Category"
             [disabled]="!productForm.get('categoryId')?.value"
             appendTo="body"
+            styleClass="w-full"
           ></p-select>
         </div>
       </div>
 
-      <div class="premium-input-group">
+      <div class="admin-field">
+        <label for="collectionId">Collection (Optional)</label>
+        <p-select
+          id="collectionId"
+          formControlName="collectionId"
+          [options]="collections()"
+          optionLabel="title"
+          optionValue="_id"
+          placeholder="Select Collection"
+          [showClear]="true"
+          appendTo="body"
+          styleClass="w-full"
+        ></p-select>
+      </div>
+
+      <div class="admin-field">
         <label>Product Image</label>
-        <div class="file-upload-container">
-          <label for="image" class="upload-area">
-            <i class="pi pi-cloud-upload"></i>
-            <div class="upload-text">
+        <div class="border-2 border-dashed border-300 border-round-xl p-4 text-center hover:border-primary transition-colors cursor-pointer bg-gray-50">
+          <label for="image" class="cursor-pointer block w-full h-full">
+            <i class="pi pi-cloud-upload text-4xl text-500 mb-2 block"></i>
+            <div class="text-700 font-medium mb-1">
               @if (selectedFile()) {
-                <span>{{ selectedFile()?.name }}</span>
+                <span class="text-primary">{{ selectedFile()?.name }}</span>
               } @else {
-                Click to <span>upload image</span> or drag and drop
+                Click to <span class="text-primary">upload image</span> or drag and drop
               }
             </div>
-            <span class="upload-hint">PNG, JPG, WebP up to 5MB</span>
-            <input type="file" id="image" (change)="onFileSelect($event)" accept="image/*" />
+            <span class="text-500 text-sm">PNG, JPG, WebP up to 5MB</span>
+            <input type="file" id="image" (change)="onFileSelect($event)" accept="image/*" class="hidden" />
           </label>
-          @if (!isEdit() && !selectedFile()) {
-            <small class="p-error block mt-1">An image is required for new products.</small>
-          }
         </div>
+        @if (!isEdit() && !selectedFile()) {
+          <small class="p-error block mt-1">An image is required for new products.</small>
+        }
       </div>
     </form>
   </ng-template>

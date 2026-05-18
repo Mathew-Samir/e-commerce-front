@@ -88,13 +88,13 @@
                           >
                             {{ item.quantity }}
                           </div>
-                          <p-button
-                            icon="pi pi-plus"
-                            severity="secondary"
-                            [outlined]="true"
-                            (onClick)="updateQuantity(item.id, 1)"
-                            [disabled]="item.product.inventoryStatus === 'OUTOFSTOCK'"
-                          />
+                            <p-button
+                              icon="pi pi-plus"
+                              severity="secondary"
+                              [outlined]="true"
+                              (onClick)="updateQuantity(item.id, 1)"
+                              [disabled]="item.quantity >= item.product.stock"
+                            />
                         </div>
                       </div>
                     </div>

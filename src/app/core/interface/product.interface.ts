@@ -12,6 +12,12 @@ export interface ProductSubCategory {
   isActive?: boolean;
 }
 
+export interface ProductCollection {
+  _id: string;
+  name: string;
+  title: string;
+}
+
 export interface Product {
   _id: string;
   name: string;
@@ -21,6 +27,7 @@ export interface Product {
   stock: number;
   categoryId?: ProductCategory;
   subCategoryId?: ProductSubCategory;
+  collectionId?: ProductCollection;
   inventoryStatus?: string;
   rating?: number;
   isActive?: boolean;
