@@ -7,7 +7,7 @@ import { PasswordModule } from 'primeng/password';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
 import { AuthService } from '../../../core/services/auth.service';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-change-password',
@@ -18,7 +18,8 @@ import { Router } from '@angular/router';
     ButtonModule,
     InputTextModule,
     PasswordModule,
-    ToastModule
+    ToastModule,
+    RouterModule
   ],
   providers: [MessageService],
   templateUrl: './change-password.html',

@@ -30,7 +30,7 @@
             (onClick)="openConfirmDialog('cancel')"
           />
         }
-        @if (currentOrder.status.toLowerCase() === 'received') {
+        @if (currentOrder.status.toLowerCase() === 'received' || currentOrder.status.toLowerCase() === 'shipped') {
           <p-button label="Refund" icon="pi pi-refresh" [outlined]="true" (onClick)="openConfirmDialog('refund')" />
         }
       </div>
@@ -124,6 +124,11 @@
     </div>
 
     @if (confirmActionType() === 'refund') {
+      <div class="p-3 bg-blue-50 text-blue-800 border-round text-sm flex align-items-center gap-2 mt-3">
+        <i class="pi pi-info-circle text-blue-500 text-lg"></i>
+        <span> Refund allowed within 14 days after order received</span>
+      </div>
+
       <div class="flex flex-column gap-2 mt-3 w-full">
         <label for="reason" class="font-semibold">Reason for Refund</label>
         <textarea
