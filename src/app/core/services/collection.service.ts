@@ -4,7 +4,7 @@ import { Collection, CreateCollectionPayload } from '../interface/collection.int
 import { Product } from '../interface/product.interface';
 import { ApiResponse } from '../interface/api-response.interface';
 import { environment } from '../../../environments/environment';
-import { tap, catchError, of, finalize } from 'rxjs';
+import { tap, catchError, throwError, of, finalize } from 'rxjs';
 
 interface SeasonalProductsResponse {
   success: boolean;
@@ -47,8 +47,9 @@ export class CollectionService {
         }
       }),
       catchError((err) => {
-        this.errorSignal.set(err.error?.message || 'Failed to fetch collections');
-        return of(null);
+        const errMsg = err.error?.message || 'Failed to fetch collections';
+        this.errorSignal.set(errMsg);
+        return throwError(() => new Error(errMsg));
       }),
       finalize(() => this.loadingSignal.set(false)),
     );
@@ -64,8 +65,9 @@ export class CollectionService {
         }
       }),
       catchError((err) => {
-        this.errorSignal.set(err.error?.message || 'Failed to create collection');
-        return of(null);
+        const errMsg = err.error?.message || 'Failed to create collection';
+        this.errorSignal.set(errMsg);
+        return throwError(() => new Error(errMsg));
       }),
       finalize(() => this.loadingSignal.set(false)),
     );
@@ -83,8 +85,9 @@ export class CollectionService {
         }
       }),
       catchError((err) => {
-        this.errorSignal.set(err.error?.message || 'Failed to update collection');
-        return of(null);
+        const errMsg = err.error?.message || 'Failed to update collection';
+        this.errorSignal.set(errMsg);
+        return throwError(() => new Error(errMsg));
       }),
       finalize(() => this.loadingSignal.set(false)),
     );
@@ -100,8 +103,9 @@ export class CollectionService {
         }
       }),
       catchError((err) => {
-        this.errorSignal.set(err.error?.message || 'Failed to delete collection');
-        return of(null);
+        const errMsg = err.error?.message || 'Failed to delete collection';
+        this.errorSignal.set(errMsg);
+        return throwError(() => new Error(errMsg));
       }),
       finalize(() => this.loadingSignal.set(false)),
     );
@@ -119,8 +123,9 @@ export class CollectionService {
           }
         }),
         catchError((err) => {
-          this.errorSignal.set(err.error?.message || 'Failed to toggle collection status');
-          return of(null);
+          const errMsg = err.error?.message || 'Failed to toggle collection status';
+          this.errorSignal.set(errMsg);
+          return throwError(() => new Error(errMsg));
         }),
       );
   }

@@ -1,6 +1,7 @@
-import { Component, inject, signal } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { Component, inject, signal, computed, ChangeDetectionStrategy } from '@angular/core';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, AbstractControl, ValidationErrors } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
@@ -11,7 +12,6 @@ import { Router, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-change-password',
-  standalone: true,
   imports: [
     CommonModule,
     ReactiveFormsModule,
@@ -24,6 +24,7 @@ import { Router, RouterModule } from '@angular/router';
   providers: [MessageService],
   templateUrl: './change-password.html',
   styleUrl: './change-password.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ChangePassword {
   private fb = inject(FormBuilder);
@@ -32,6 +33,15 @@ export class ChangePassword {
   private router = inject(Router);
 
   isLoading = signal(false);
+  currentUser = this.authService.currentUser;
+
+  returnUrl = computed(() => {
+    return this.currentUser()?.['role'] === 'admin' ? '/admin' : '/home';
+  });
+
+  returnLabel = computed(() => {
+    return this.currentUser()?.['role'] === 'admin' ? 'Back to Admin Dashboard' : 'Back to Home';
+  });
 
   passwordForm: FormGroup = this.fb.group({
     oldPassword: ['', [Validators.required]],
@@ -39,9 +49,9 @@ export class ChangePassword {
     confirmPassword: ['', [Validators.required]]
   }, { validators: this.passwordMatchValidator });
 
-  passwordMatchValidator(form: FormGroup) {
-    const newPass = form.get('newPassword')?.value;
-    const confirmPass = form.get('confirmPassword')?.value;
+  passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
+    const newPass = control.get('newPassword')?.value;
+    const confirmPass = control.get('confirmPassword')?.value;
     return newPass === confirmPass ? null : { mismatch: true };
   }
 
@@ -55,15 +65,15 @@ export class ChangePassword {
     const { oldPassword, newPassword } = this.passwordForm.value;
 
     this.authService.changePassword({ oldPassword, newPassword }).subscribe({
-      next: (res) => {
+      next: () => {
         this.messageService.add({
           severity: 'success',
           summary: 'Success',
           detail: 'Password changed successfully'
         });
-        setTimeout(() => this.router.navigate(['/home']), 2000);
+        setTimeout(() => this.router.navigate([this.returnUrl()]), 2000);
       },
-      error: (err) => {
+      error: (err: HttpErrorResponse) => {
         this.messageService.add({
           severity: 'error',
           summary: 'Error',

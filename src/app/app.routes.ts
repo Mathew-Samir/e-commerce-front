@@ -112,5 +112,10 @@ export const routes: Routes = [
       },
     ],
   },
+  {
+    path: 'admin/change-password',
+    canActivate: [adminGuard],
+    component: ChangePassword,
+  },
   { path: '**', redirectTo: '' },
 ];

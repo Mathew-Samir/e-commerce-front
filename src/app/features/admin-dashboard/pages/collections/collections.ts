@@ -132,6 +132,13 @@ export class CollectionsManagement implements OnInit {
           this.collectionDialog.set(false);
         }
       },
+      error: (err) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: err.message || 'Failed to save collection',
+        });
+      },
     });
   }
 
@@ -153,6 +160,13 @@ export class CollectionsManagement implements OnInit {
               });
             }
           },
+          error: (err) => {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: err.message || 'Failed to delete collection',
+            });
+          },
         });
       },
     });
@@ -168,6 +182,13 @@ export class CollectionsManagement implements OnInit {
             detail: `Collection ${collection.isActive ? 'deactivated' : 'activated'}`,
           });
         }
+      },
+      error: (err) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: err.message || 'Failed to toggle collection status',
+        });
       },
     });
   }
