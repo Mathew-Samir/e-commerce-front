@@ -30,7 +30,7 @@
             (onClick)="openConfirmDialog('cancel')"
           />
         }
-        @if (currentOrder.status.toLowerCase() === 'received' || currentOrder.status.toLowerCase() === 'shipped') {
+        @if (currentOrder.status.toLowerCase() === 'received') {
           <p-button label="Refund" icon="pi pi-refresh" [outlined]="true" (onClick)="openConfirmDialog('refund')" />
         }
       </div>

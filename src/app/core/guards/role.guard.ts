@@ -20,18 +20,9 @@ export const adminGuard: CanActivateFn = () => {
 };
 
 /**
- * Guard to ensure admins are redirected to the admin dashboard if they try to access e-commerce routes.
- * Also allows regular users and guests to access e-commerce.
+ * Guard to allow access to e-commerce routes for all users (including admins and guests).
  */
 export const userGuard: CanActivateFn = () => {
-  const authService = inject(AuthService);
-  const router = inject(Router);
-  const user = authService.currentUser();
-
-  if (user && user['role'] === 'admin') {
-    return router.parseUrl('/admin');
-  }
-
   return true;
 };
 

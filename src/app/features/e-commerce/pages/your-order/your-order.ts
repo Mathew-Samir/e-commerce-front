@@ -130,6 +130,9 @@ export class YourOrder implements OnInit {
         }
       });
     } else if (action === 'refund') {
+      if (currentOrder.status.toLowerCase() !== 'received') {
+        return;
+      }
       if (!this.refundReason().trim()) {
         return;
       }

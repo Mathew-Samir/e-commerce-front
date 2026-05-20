@@ -32,22 +32,40 @@
         <p-menu #menu [model]="profileItems()" [popup]="true" appendTo="body" styleClass="premium-menu"></p-menu>
       } @else {
         <div class="auth-buttons">
-          <p-button
-            label="Log In"
-            icon="pi pi-sign-in"
-            severity="secondary"
-            [outlined]="true"
-            class="login-btn"
-            routerLink="/login"
-          />
+          @if (currentUser()?.['role'] === 'admin') {
+            <p-button
+              label="Admin Dashboard"
+              icon="pi pi-chart-bar"
+              severity="primary"
+              class="admin-dashboard-btn"
+              routerLink="/admin"
+            />
+            <p-button
+              label="Logout"
+              icon="pi pi-sign-out"
+              severity="danger"
+              [outlined]="true"
+              class="logout-btn"
+              (onClick)="logout()"
+            />
+          } @else {
+            <p-button
+              label="Log In"
+              icon="pi pi-sign-in"
+              severity="secondary"
+              [outlined]="true"
+              class="login-btn"
+              routerLink="/login"
+            />
 
-          <p-button
-            label="Get Started"
-            icon="pi pi-bolt"
-            severity="contrast"
-            class="signup-btn"
-            routerLink="/signup"
-          />
+            <p-button
+              label="Get Started"
+              icon="pi pi-bolt"
+              severity="contrast"
+              class="signup-btn"
+              routerLink="/signup"
+            />
+          }
         </div>
       }
     </div>

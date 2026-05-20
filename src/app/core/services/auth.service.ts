@@ -21,7 +21,10 @@ export class AuthService {
 
   // Selectors
   currentUser = computed(() => this.currentUserSignal());
-  isAuthenticated = computed(() => !!this.currentUserSignal());
+  isAuthenticated = computed(() => {
+    const user = this.currentUserSignal();
+    return !!user && user['role'] !== 'admin';
+  });
   isAuthenticating = computed(() => this.isAuthenticatingSignal());
 
   constructor() {

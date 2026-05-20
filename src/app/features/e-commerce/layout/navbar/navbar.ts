@@ -27,31 +27,48 @@ export class Navbar implements OnInit {
 
   @ViewChild('menu') menu!: Menu;
 
-  profileItems = computed<MenuItem[]>(() => [
-    {
-      label: 'My Orders',
-      icon: 'pi pi-shopping-bag',
-      routerLink: '/my-orders'
-    },
-    {
-      label: 'My Refunds',
-      icon: 'pi pi-refresh',
-      routerLink: '/my-refunds'
-    },
-    {
-      label: 'Change Password',
-      icon: 'pi pi-key',
-      routerLink: '/change-password'
-    },
-    {
-      separator: true
-    },
-    {
-      label: 'Logout',
-      icon: 'pi pi-sign-out',
-      command: () => this.logout()
+  profileItems = computed<MenuItem[]>(() => {
+    const items: MenuItem[] = [];
+
+    if (this.currentUser()?.['role'] === 'admin') {
+      items.push({
+        label: 'Admin Dashboard',
+        icon: 'pi pi-chart-bar',
+        routerLink: '/admin'
+      });
+      items.push({
+        separator: true
+      });
     }
-  ]);
+
+    items.push(
+      {
+        label: 'My Orders',
+        icon: 'pi pi-shopping-bag',
+        routerLink: '/my-orders'
+      },
+      {
+        label: 'My Refunds',
+        icon: 'pi pi-refresh',
+        routerLink: '/my-refunds'
+      },
+      {
+        label: 'Change Password',
+        icon: 'pi pi-key',
+        routerLink: '/change-password'
+      },
+      {
+        separator: true
+      },
+      {
+        label: 'Logout',
+        icon: 'pi pi-sign-out',
+        command: () => this.logout()
+      }
+    );
+
+    return items;
+  });
 
   items = computed<MenuItem[]>(() => {
     const baseItems: MenuItem[] = [
