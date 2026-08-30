@@ -1,5 +1,4 @@
 export const environment = {
-  production: true,
+  production: false,
   apiUrl: 'https://e-commerce-back-plum.vercel.app/api/v1',
 };
-
