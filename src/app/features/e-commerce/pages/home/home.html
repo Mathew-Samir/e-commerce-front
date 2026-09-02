@@ -47,19 +47,18 @@
           [numScroll]="1"
           [responsiveOptions]="responsiveOptions"
           [circular]="true"
-          [autoplayInterval]="4000">
+          [autoplayInterval]="4000"
+        >
           <ng-template let-product pTemplate="item">
             <div class="product-item">
               <div class="product-card seasonal-card">
                 <div class="product-image-container">
-                  <img
-                    [src]="product.image"
-                    [alt]="product.name"
-                    class="product-image" />
+                  <img [src]="product.image" [alt]="product.name" class="product-image" />
                   <p-tag
                     [value]="getStockStatus(product.stock)"
                     [severity]="getSeverity(product.stock)"
-                    class="status-tag">
+                    class="status-tag"
+                  >
                   </p-tag>
                   @if (product.collectionId?.title) {
                     <span class="collection-label">{{ product.collectionId.title }}</span>
@@ -68,14 +67,28 @@
                 <div class="product-info">
                   <h4 class="product-name">
                     {{ product.name }}
-                    <span class="stock-qty" style="font-size: 0.95rem; color: #d32f2f; font-weight: 600; display: block; margin-top: 0.25rem;">
+                    <span
+                      class="stock-qty"
+                      style="
+                        font-size: 0.95rem;
+                        color: #d32f2f;
+                        font-weight: 600;
+                        display: block;
+                        margin-top: 0.25rem;
+                      "
+                    >
                       Stock: {{ product.stock }} available
                     </span>
                   </h4>
                   <div class="product-footer">
                     <span class="product-price">{{ '$' + product.price }}</span>
                     <div class="product-actions">
-                      <p-button icon="pi pi-shopping-cart" class="cart-btn" (onClick)="addToCart(product)" [disabled]="product.stock === 0" />
+                      <p-button
+                        icon="pi pi-shopping-cart"
+                        class="cart-btn"
+                        (onClick)="addToCart(product)"
+                        [disabled]="product.stock === 0"
+                      />
                     </div>
                   </div>
                 </div>
@@ -108,11 +121,7 @@
           <div class="product-item">
             <div class="product-card">
               <div class="product-image-container">
-                <img
-                  [src]="product.image"
-                  [alt]="product.name"
-                  class="product-image"
-                />
+                <img [src]="product.image" [alt]="product.name" class="product-image" />
                 <p-tag
                   [value]="getStockStatus(product.stock)"
                   [severity]="getSeverity(product.stock)"
@@ -122,14 +131,28 @@
               <div class="product-info">
                 <h4 class="product-name">
                   {{ product.name }}
-                  <span class="stock-qty" style="font-size: 0.95rem; color: #d32f2f; font-weight: 600; display: block; margin-top: 0.25rem;">
+                  <span
+                    class="stock-qty"
+                    style="
+                      font-size: 0.95rem;
+                      color: #d32f2f;
+                      font-weight: 600;
+                      display: block;
+                      margin-top: 0.25rem;
+                    "
+                  >
                     Stock: {{ product.stock }} available
                   </span>
                 </h4>
                 <div class="product-footer">
                   <span class="product-price">{{ '$' + product.price }}</span>
                   <div class="product-actions">
-                    <p-button icon="pi pi-shopping-cart" class="cart-btn" (onClick)="addToCart(product)" [disabled]="product.stock === 0" />
+                    <p-button
+                      icon="pi pi-shopping-cart"
+                      class="cart-btn"
+                      (onClick)="addToCart(product)"
+                      [disabled]="product.stock === 0"
+                    />
                   </div>
                 </div>
               </div>
@@ -148,12 +171,21 @@
       <p>Real reviews from real people</p>
     </div>
 
-    <div class="grid">
-      @for (testimonial of testimonials(); track testimonial.id) {
-        <div class="col-12 md:col-6 lg:col-4">
-          <app-testimonials-card [testimonial]="testimonial" />
-        </div>
-      }
+    <div class="testimonials-carousel-wrapper">
+      <p-carousel
+        [value]="testimonials()"
+        [numVisible]="3"
+        [numScroll]="1"
+        [responsiveOptions]="responsiveOptions"
+        [circular]="true"
+        [autoplayInterval]="5000"
+      >
+        <ng-template let-testimonial pTemplate="item">
+          <div class="p-2 h-full">
+            <app-testimonials-card [testimonial]="testimonial" />
+          </div>
+        </ng-template>
+      </p-carousel>
     </div>
   </div>
 </section>

@@ -1,34 +1,43 @@
-<p-card class="testimonial-card-container">
-  <div class="testimonial-card-content">
-    <div class="testimonial-header">
-      <div class="user-info">
-        <p-avatar
-          [image]="testimonial().avatar"
-          shape="circle"
-          size="xlarge"
-          class="user-avatar">
-        </p-avatar>
-        <div class="user-details">
-          <h3 class="user-name">{{ testimonial().name }}</h3>
-          @if (testimonial().date) {
-            <span class="testimonial-date">{{ testimonial().date }}</span>
-          }
-        </div>
-      </div>
-      <div class="rating-container">
-        <p-rating
-          [ngModel]="testimonial().rating"
-          [readonly]="true"
-          [stars]="5">
-        </p-rating>
-
-      </div>
-    </div>
-
-    <div class="testimonial-body">
-      <i class="pi pi-quote-left quote-icon"></i>
-      <p class="testimonial-text">{{ testimonial().content }}</p>
-    </div>
+<div class="testimonial-card">
+  <!-- Rating Stars -->
+  <div class="rating-stars" [attr.aria-label]="testimonial().rating + ' out of 5 stars'">
+    @for (star of stars; track star) {
+      <svg
+        class="star-icon"
+        width="22"
+        height="22"
+        viewBox="0 0 24 24"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
+          [attr.fill]="star <= testimonial().rating ? '#FFC633' : '#E5E7EB'"
+          [attr.stroke]="star <= testimonial().rating ? '#FFC633' : '#E5E7EB'"
+          stroke-width="1"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
+    }
   </div>
-</p-card>
+
+  <!-- Customer Name & Verified Badge -->
+  <div class="customer-info">
+    <h3 class="customer-name">{{ testimonial().name }}</h3>
+    <span class="verified-badge" aria-label="Verified Customer" title="Verified Customer">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="12" cy="12" r="10" fill="#01AB31"/>
+        <path d="M8 12.5L10.5 15L16 9.5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </span>
+  </div>
+
+  <!-- Review Content -->
+  <p class="review-text">"{{ testimonial().content }}"</p>
+
+  @if (testimonial().date) {
+    <span class="testimonial-date">{{ testimonial().date }}</span>
+  }
+</div>
 

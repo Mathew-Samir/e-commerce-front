@@ -401,6 +401,79 @@
     padding: 0 1.5rem;
     display: flex;
     flex-direction: column;
-    gap: 4rem;
+    gap: 3rem;
+    position: relative;
+  }
+
+  .section-header {
+    text-align: center;
+    align-items: center;
+
+    h2 {
+      letter-spacing: -0.02em;
+    }
+
+    @media (min-width: 769px) {
+      padding: 0 8rem; // Equal padding on both sides to keep the text perfectly centered while avoiding overlap with arrows
+    }
+  }
+
+  .testimonials-carousel-wrapper {
+    position: relative;
+
+    ::ng-deep .p-carousel {
+      .p-carousel-indicators {
+        display: none;
+      }
+
+      @media (min-width: 769px) {
+        .p-carousel-content {
+          position: static;
+        }
+
+        .p-carousel-prev,
+        .p-carousel-next {
+          position: absolute;
+          top: -3.5rem; // Adjusted to align vertically with the section header above the carousel
+          transform: translateY(-50%);
+          margin: 0;
+          width: 3rem;
+          height: 3rem;
+          background: transparent;
+          color: #000;
+          border: none;
+
+          &:hover {
+            background: rgba(0, 0, 0, 0.05);
+            border-radius: 50%;
+          }
+
+          .p-icon {
+            width: 1.5rem;
+            height: 1.5rem;
+          }
+        }
+
+        .p-carousel-prev {
+          right: 4.5rem;
+        }
+
+        .p-carousel-next {
+          right: 1rem;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .p-carousel-prev,
+        .p-carousel-next {
+          display: none !important; // Hide arrows on mobile, rely on swipe
+        }
+
+        .p-carousel-indicators {
+          display: flex; // Show indicators on mobile instead
+          padding-top: 1.5rem;
+        }
+      }
+    }
   }
 }
