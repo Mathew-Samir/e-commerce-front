@@ -10,7 +10,9 @@
         </p-avatar>
         <div class="user-details">
           <h3 class="user-name">{{ testimonial().name }}</h3>
-          <span class="testimonial-date" *ngIf="testimonial().date">{{ testimonial().date }}</span>
+          @if (testimonial().date) {
+            <span class="testimonial-date">{{ testimonial().date }}</span>
+          }
         </div>
       </div>
       <div class="rating-container">

@@ -34,9 +34,9 @@ export class TestimonialService {
   getApprovedTestimonials() {
     return this.http.get<TestimonialsResponse>(this.apiUrl).pipe(
       map(res => {
-        if (!res.success) return [];
+        if (!res?.success || !Array.isArray(res?.data)) return [];
         return res.data.map(apiTestimonial => {
-           const authorName = typeof apiTestimonial.userId === 'object' && apiTestimonial.userId.name
+           const authorName = typeof apiTestimonial.userId === 'object' && apiTestimonial.userId?.name
                 ? apiTestimonial.userId.name
                 : 'Anonymous';
 
@@ -49,7 +49,8 @@ export class TestimonialService {
              date: apiTestimonial.createdAt ? new Date(apiTestimonial.createdAt).toLocaleDateString() : undefined
            } as Testimonial;
         });
-      })
+      }),
+      catchError(() => of([]))
     );
   }
 
