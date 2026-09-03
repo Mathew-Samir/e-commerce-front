@@ -115,9 +115,9 @@ export class AuthService {
         }
       },
       error: (err) => {
-        // If it's a 401 or 403, clear auth and redirect
+        // Clear stored auth state; the route guard handles redirection
         if (err.status === 401 || err.status === 403) {
-          this.clearAuth(true);
+          this.clearAuth(false);
         }
       },
     });

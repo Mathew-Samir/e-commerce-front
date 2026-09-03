@@ -21,8 +21,26 @@ export const adminGuard: CanActivateFn = () => {
 
 /**
  * Guard to allow access to e-commerce routes for all users (including admins and guests).
+ * Redirects unauthenticated users to the login page.
  */
-export const userGuard: CanActivateFn = () => {
+export const userGuard: CanActivateFn = (route, state) => {
+  const router = inject(Router);
+  const authService = inject(AuthService);
+
+  // Allow access to auth-related pages without a token
+  const publicPaths = ['/login', '/signup', '/change-password'];
+  const targetUrl = state.url;
+  const isPublicPage = publicPaths.some((path) => targetUrl.includes(path));
+
+  if (isPublicPage) {
+    return true;
+  }
+
+  // Redirect to login if no token exists
+  if (!authService.getToken()) {
+    return router.parseUrl('/login');
+  }
+
   return true;
 };
 
