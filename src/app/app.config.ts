@@ -27,6 +27,14 @@ const AppThemePreset = definePreset(Aura, {
       950: '{slate.950}',
     },
   },
+  components: {
+    rating: {
+      icon: {
+        activeColor: '#f59e0b',
+        hoverColor: '#d97706',
+      },
+    },
+  },
 });
 
 export const appConfig: ApplicationConfig = {

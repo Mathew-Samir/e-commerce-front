@@ -540,3 +540,16 @@ body {
   }
 }
 
+// ── Global Rating Stars Gold Color ──
+.p-rating {
+  --p-rating-icon-active-color: #f59e0b;
+  --p-rating-icon-hover-color: #d97706;
+
+  .p-rating-option-active .p-rating-icon,
+  .p-rating-item-active .p-rating-icon,
+  .p-rating-icon.p-rating-icon-active {
+    color: #f59e0b !important;
+    fill: #f59e0b !important;
+  }
+}
+
