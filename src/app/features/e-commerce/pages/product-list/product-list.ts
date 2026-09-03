@@ -1,4 +1,5 @@
 import { Component, signal, ChangeDetectionStrategy, computed, inject, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
@@ -40,6 +41,7 @@ export class ProductList implements OnInit {
   private productService = inject(ProductService);
   private collectionService = inject(CollectionService);
   private cartService = inject(CartService);
+  private route = inject(ActivatedRoute);
 
   // Access signals from service
   products = this.productService.products;
@@ -103,6 +105,11 @@ export class ProductList implements OnInit {
   ngOnInit() {
     this.productService.getProducts().subscribe();
     this.collectionService.getActiveCollections().subscribe();
+
+    const collectionId = this.route.snapshot.queryParamMap.get('collection');
+    if (collectionId) {
+      this.selectedCollection.set(collectionId);
+    }
   }
 
   onPageChange(event: PaginatorState) {

@@ -1,4 +1,5 @@
-import { Component, ChangeDetectionStrategy, signal, inject } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { CarouselModule } from 'primeng/carousel';
@@ -14,12 +15,13 @@ import { CollectionService } from '../../../../core/services/collection.service'
 
 @Component({
   selector: 'app-home',
-  imports: [CommonModule, CarouselModule, ButtonModule, TagModule, TestimonialsCard],
+  imports: [CommonModule, CarouselModule, ButtonModule, TagModule, TestimonialsCard, RouterLink],
   templateUrl: './home.html',
   styleUrl: './home.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Home {
+
   private readonly testimonialService = inject(TestimonialService);
   private readonly productService = inject(ProductService);
   private readonly cartService = inject(CartService);
@@ -68,5 +70,9 @@ export class Home {
 
   addToCart(product: Product) {
     this.cartService.addToCart(product);
+  }
+
+  scrollToBestSellers() {
+    document.getElementById('best-sellers')?.scrollIntoView({ behavior: 'smooth' });
   }
 }
