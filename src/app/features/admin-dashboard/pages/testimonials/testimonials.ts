@@ -99,4 +99,9 @@ export class TestimonialsManagement implements OnInit {
     }
     return 'Anonymous';
   }
+
+  getAvatarUrl(userId: string | { _id: string; name: string } | null | undefined): string {
+    const author = this.getAuthorName(userId);
+    return `https://ui-avatars.com/api/?name=${encodeURIComponent(author)}&background=random`;
+  }
 }

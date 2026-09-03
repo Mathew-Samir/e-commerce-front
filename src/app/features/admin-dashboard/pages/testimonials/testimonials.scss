@@ -1,1 +1,15 @@
-/* Styles are handled globally by admin-shared design system */
+:host ::ng-deep {
+  .p-rating {
+    .p-rating-option-active .p-rating-icon,
+    .p-rating-item-active .p-rating-icon,
+    .p-rating-icon.p-rating-icon-active {
+      color: #f59e0b !important;
+      fill: #f59e0b !important;
+    }
+
+    svg {
+      color: inherit;
+      fill: currentColor;
+    }
+  }
+}

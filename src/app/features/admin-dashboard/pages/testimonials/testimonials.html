@@ -54,8 +54,11 @@
             <td>
               <div class="admin-user-cell">
                 <img
-                  [src]="'https://ui-avatars.com/api/?name=' + getAuthorName(testimonial.userId) + '&background=random'"
+                  [src]="getAvatarUrl(testimonial.userId)"
                   class="admin-avatar"
+                  alt="Avatar"
+                  loading="lazy"
+                  decoding="async"
                 />
                 <div class="admin-user-info">
                   <span class="admin-user-name">{{ getAuthorName(testimonial.userId) }}</span>

@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
@@ -23,6 +23,7 @@ import { AuthService } from '../../../core/services/auth.service';
   ],
   templateUrl: './login.html',
   styleUrl: './login.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Login {
   private fb = inject(FormBuilder);
@@ -31,6 +32,7 @@ export class Login {
 
   private route = inject(ActivatedRoute);
 
+  readonly logoSrc = signal('assets/logo.png');
   isSubmitting = signal(false);
   errorMessage = signal<string | null>(null);
 

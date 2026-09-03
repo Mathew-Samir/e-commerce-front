@@ -3,7 +3,13 @@
     <div class="footer-container">
       <!-- Brand -->
       <div class="footer-col brand-col">
-        <img src="assets/logo.png" alt="MyShop" class="logo" />
+        <img
+          [src]="logoSrc()"
+          alt="MyShop"
+          class="logo"
+          loading="lazy"
+          decoding="async"
+        />
         <p class="brand-desc">
           Your trusted fashion store for modern casual wear. Experience premium quality and
           outstanding design.

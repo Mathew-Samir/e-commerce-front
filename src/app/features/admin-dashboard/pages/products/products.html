@@ -100,9 +100,11 @@
             <td>
               <div class="relative">
                 <img
-                  [src]="product.image || 'assets/placeholder.png'"
+                  [src]="product.image || placeholderImage()"
                   [alt]="product.name"
                   class="w-4rem h-4rem border-round-lg shadow-1 object-cover"
+                  loading="lazy"
+                  decoding="async"
                 />
               </div>
             </td>

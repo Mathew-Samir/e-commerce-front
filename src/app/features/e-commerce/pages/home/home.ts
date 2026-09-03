@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
@@ -21,12 +21,14 @@ import { CollectionService } from '../../../../core/services/collection.service'
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Home {
-
   private readonly testimonialService = inject(TestimonialService);
   private readonly productService = inject(ProductService);
   private readonly cartService = inject(CartService);
   private readonly collectionService = inject(CollectionService);
 
+  readonly heroImage = signal(
+    'https://images.pexels.com/photos/1884584/pexels-photo-1884584.jpeg?auto=compress&cs=tinysrgb&w=1600'
+  );
   bestSellers = this.productService.bestSellers;
   seasonalProducts = this.collectionService.seasonalProducts;
   activeCollections = this.collectionService.activeCollections;

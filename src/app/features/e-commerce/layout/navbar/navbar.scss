@@ -27,6 +27,13 @@
     }
 
     @media (max-width: 991px) {
+      display: none !important;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      width: 100%;
+      flex-direction: column;
       background: rgba(255, 255, 255, 0.95);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
@@ -88,6 +95,15 @@
     border-radius: var(--radius-md);
     &:hover {
       background: var(--bg-muted) !important;
+    }
+  }
+
+  &.p-menubar-mobile-active,
+  &.p-menubar-mobile.p-menubar-mobile-active {
+    .p-menubar-root-list {
+      @media (max-width: 991px) {
+        display: flex !important;
+      }
     }
   }
 }

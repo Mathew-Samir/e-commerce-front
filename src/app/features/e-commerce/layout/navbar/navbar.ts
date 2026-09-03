@@ -1,4 +1,4 @@
-import { Component, OnInit, computed, inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, computed, inject, ChangeDetectionStrategy, signal } from '@angular/core';
 import { MenubarModule } from 'primeng/menubar';
 import { MenuItem } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
@@ -21,6 +21,7 @@ export class Navbar implements OnInit {
   private cartService = inject(CartService);
   private authService = inject(AuthService);
 
+  readonly logoSrc = signal('assets/logo.png');
   cartCount = this.cartService.cartCount;
   currentUser = this.authService.currentUser;
   isAuthenticated = this.authService.isAuthenticated;

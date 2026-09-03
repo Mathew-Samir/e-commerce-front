@@ -59,6 +59,7 @@ export class ProductsManagement implements OnInit {
   subCategories = this.productService.subCategories;
   collections = this.collectionService.collections;
   loading = this.productService.isLoading;
+  readonly placeholderImage = signal('assets/placeholder.png');
 
   productForm: FormGroup = this.fb.group({
     name: ['', Validators.required],

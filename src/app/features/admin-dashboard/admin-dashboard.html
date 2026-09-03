@@ -37,6 +37,8 @@
             [src]="currentUser()?.['image']"
             class="w-2rem h-2rem border-circle object-cover shadow-2"
             alt="Admin"
+            loading="lazy"
+            decoding="async"
           />
         } @else {
           <div

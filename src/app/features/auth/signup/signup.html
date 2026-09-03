@@ -1,5 +1,16 @@
 <div class="signup-container">
   <div class="signup-card">
+    <div class="logo-wrapper">
+      <img
+        [src]="logoSrc()"
+        alt="MyShop"
+        class="auth-logo"
+        routerLink="/home"
+        loading="lazy"
+        decoding="async"
+      />
+    </div>
+
     <h2>Create Account</h2>
     <p class="subtitle">Join our community today</p>
 
@@ -91,7 +102,7 @@
             <a
               href="javascript:void(0)"
               (click)="showTermsDialog.set(true)"
-              class="text-primary font-medium hover:underline"
+              class="terms-link"
             >
               terms and conditions
             </a>
@@ -112,10 +123,10 @@
         styleClass="w-full"
       />
 
-      <p class="text-center mt-3">Already have an account? <a routerLink="/login">Login</a></p>
+      <p class="auth-switch">Already have an account? <a routerLink="/login">Login</a></p>
 
       <div class="text-center mt-2">
-        <a routerLink="/home" class="flex align-items-center justify-content-center gap-1 text-primary font-semibold hover:underline">
+        <a routerLink="/home" class="back-home-link">
           <i class="pi pi-home"></i> Back to Home
         </a>
       </div>
