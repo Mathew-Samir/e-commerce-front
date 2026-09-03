@@ -1,7 +1,14 @@
 <p-menubar [model]="items()" styleClass="premium-navbar">
 
   <ng-template pTemplate="start">
-    <img src="assets/logo.png" alt="MyShop" class="logo" routerLink="/home" />
+    <img
+      [src]="logoSrc()"
+      alt="MyShop"
+      class="logo"
+      routerLink="/home"
+      loading="lazy"
+      decoding="async"
+    />
   </ng-template>
 
   <ng-template pTemplate="end">

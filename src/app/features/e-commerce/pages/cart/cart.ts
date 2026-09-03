@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal, computed } from '@angular/core';
+import { Component, OnInit, inject, signal, computed, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
@@ -21,13 +21,13 @@ import { AuthService } from '../../../../core/services/auth.service';
     NgClass,
     CurrencyPipe,
     InputTextModule,
-    InputTextModule,
     RouterModule,
     ReactiveFormsModule,
     DialogModule,
   ],
   templateUrl: './cart.html',
   styleUrl: './cart.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Cart implements OnInit {
   private cartService = inject(CartService);
@@ -131,5 +131,14 @@ export class Cart implements OnInit {
       default:
         return 'info';
     }
+  }
+
+  getProductImageUrl(image: string | undefined): string {
+    if (!image) {
+      return 'assets/placeholder.png';
+    }
+    return image.startsWith('http')
+      ? image
+      : `https://primefaces.org/cdn/primeng/images/demo/product/${image}`;
   }
 }
