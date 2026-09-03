@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
@@ -11,7 +11,6 @@ import { FloatLabelModule } from 'primeng/floatlabel';
 import { RouterModule, Router } from '@angular/router';
 import { DialogModule } from 'primeng/dialog';
 import { TermsAndConditions } from '../../e-commerce/pages/terms-and-conditions/terms-and-conditions';
-import { signal } from '@angular/core';
 import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
@@ -32,12 +31,14 @@ import { AuthService } from '../../../core/services/auth.service';
   ],
   templateUrl: './signup.html',
   styleUrl: './signup.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Signup {
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
   private router = inject(Router);
 
+  readonly logoSrc = signal('assets/logo.png');
   showTermsDialog = signal(false);
   isSubmitting = signal(false);
   errorMessage = signal<string | null>(null);

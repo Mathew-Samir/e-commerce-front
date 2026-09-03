@@ -1,5 +1,16 @@
 <div class="login-container">
   <div class="login-card">
+    <div class="logo-wrapper">
+      <img
+        [src]="logoSrc()"
+        alt="MyShop"
+        class="auth-logo"
+        routerLink="/home"
+        loading="lazy"
+        decoding="async"
+      />
+    </div>
+
     <h2>Welcome Back</h2>
     <p class="subtitle">Please login to your account</p>
 
@@ -47,12 +58,12 @@
         styleClass="w-full"
       />
 
-      <p class="text-center mt-3">
+      <p class="auth-switch">
         Don't have an account? <a routerLink="/signup">Sign Up</a>
       </p>
 
       <div class="text-center mt-2">
-        <a routerLink="/home" class="flex align-items-center justify-content-center gap-1 text-primary font-semibold hover:underline">
+        <a routerLink="/home" class="back-home-link">
           <i class="pi pi-home"></i> Back to Home
         </a>
       </div>

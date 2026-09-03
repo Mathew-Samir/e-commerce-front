@@ -33,6 +33,7 @@ export class ChangePassword {
   private router = inject(Router);
 
   isLoading = signal(false);
+  readonly logoSrc = signal('assets/logo.png');
   currentUser = this.authService.currentUser;
 
   returnUrl = computed(() => {
